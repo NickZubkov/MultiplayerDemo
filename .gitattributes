@@ -15,63 +15,49 @@
 *.mixer          merge=unityyamlmerge eol=lf
 # Git LFS — бинарные ассеты.
 # Подключено ДО появления ассетов, чтобы не мигрировать историю задним числом.
-# ⚠️ Бесплатный тариф GitHub: 1 ГБ хранилища и 1 ГБ трафика в месяц.
+# Бесплатный тариф GitHub: 1 ГБ хранилища и 1 ГБ трафика в месяц.
 # 3D-модели
-*.fbx   filter=lfs diff=lfs merge=lfs -text
-*.FBX   filter=lfs diff=lfs merge=lfs -text
-*.obj   filter=lfs diff=lfs merge=lfs -text
-*.blend filter=lfs diff=lfs merge=lfs -text
-*.dae   filter=lfs diff=lfs merge=lfs -text
-*.3ds   filter=lfs diff=lfs merge=lfs -text
-*.ma    filter=lfs diff=lfs merge=lfs -text
-*.mb    filter=lfs diff=lfs merge=lfs -text
+*.fbx    filter=lfs diff=lfs merge=lfs -text
+*.FBX    filter=lfs diff=lfs merge=lfs -text
+*.obj    filter=lfs diff=lfs merge=lfs -text
+*.blend  filter=lfs diff=lfs merge=lfs -text
+*.dae    filter=lfs diff=lfs merge=lfs -text
+*.3ds    filter=lfs diff=lfs merge=lfs -text
+*.ma     filter=lfs diff=lfs merge=lfs -text
+*.mb     filter=lfs diff=lfs merge=lfs -text
 # Текстуры
-*.png   filter=lfs diff=lfs merge=lfs -text
-*.jpg   filter=lfs diff=lfs merge=lfs -text
-*.jpeg  filter=lfs diff=lfs merge=lfs -text
-*.tga   filter=lfs diff=lfs merge=lfs -text
-*.psd   filter=lfs diff=lfs merge=lfs -text
-*.tif   filter=lfs diff=lfs merge=lfs -text
-*.tiff  filter=lfs diff=lfs merge=lfs -text
-*.exr   filter=lfs diff=lfs merge=lfs -text
-*.hdr   filter=lfs diff=lfs merge=lfs -text
-*.bmp   filter=lfs diff=lfs merge=lfs -text
-*.gif   filter=lfs diff=lfs merge=lfs -text
+*.png     filter=lfs diff=lfs merge=lfs -text
+*.jpg     filter=lfs diff=lfs merge=lfs -text
+*.jpeg    filter=lfs diff=lfs merge=lfs -text
+*.tga     filter=lfs diff=lfs merge=lfs -text
+*.psd     filter=lfs diff=lfs merge=lfs -text
+*.tif     filter=lfs diff=lfs merge=lfs -text
+*.tiff    filter=lfs diff=lfs merge=lfs -text
+*.exr     filter=lfs diff=lfs merge=lfs -text
+*.hdr     filter=lfs diff=lfs merge=lfs -text
+*.bmp     filter=lfs diff=lfs merge=lfs -text
+*.gif     filter=lfs diff=lfs merge=lfs -text
 *.cubemap filter=lfs diff=lfs merge=lfs -text
 # Аудио
-*.wav   filter=lfs diff=lfs merge=lfs -text
-*.mp3   filter=lfs diff=lfs merge=lfs -text
-*.ogg   filter=lfs diff=lfs merge=lfs -text
-*.aif   filter=lfs diff=lfs merge=lfs -text
-*.aiff  filter=lfs diff=lfs merge=lfs -text
+*.wav    filter=lfs diff=lfs merge=lfs -text
+*.mp3    filter=lfs diff=lfs merge=lfs -text
+*.ogg    filter=lfs diff=lfs merge=lfs -text
+*.aif    filter=lfs diff=lfs merge=lfs -text
+*.aiff   filter=lfs diff=lfs merge=lfs -text
 # Видео
-*.mp4   filter=lfs diff=lfs merge=lfs -text
-*.mov   filter=lfs diff=lfs merge=lfs -text
-*.webm  filter=lfs diff=lfs merge=lfs -text
+*.mp4    filter=lfs diff=lfs merge=lfs -text
+*.mov    filter=lfs diff=lfs merge=lfs -text
+*.webm   filter=lfs diff=lfs merge=lfs -text
 # Шрифты
-*.ttf   filter=lfs diff=lfs merge=lfs -text
-*.otf   filter=lfs diff=lfs merge=lfs -text
+*.ttf    filter=lfs diff=lfs merge=lfs -text
+*.otf    filter=lfs diff=lfs merge=lfs -text
 # Библиотеки и пакеты
-*.dll   filter=lfs diff=lfs merge=lfs -text
-*.so    filter=lfs diff=lfs merge=lfs -text
-*.dylib filter=lfs diff=lfs merge=lfs -text
-*.bundle filter=lfs diff=lfs merge=lfs -text
-*.a     filter=lfs diff=lfs merge=lfs -text
+*.dll          filter=lfs diff=lfs merge=lfs -text
+*.so           filter=lfs diff=lfs merge=lfs -text
+*.dylib        filter=lfs diff=lfs merge=lfs -text
+*.bundle       filter=lfs diff=lfs merge=lfs -text
+*.a            filter=lfs diff=lfs merge=lfs -text
 *.unitypackage filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.tga filter=lfs diff=lfs merge=lfs -text
-*.psd filter=lfs diff=lfs merge=lfs -text
-*.fbx filter=lfs diff=lfs merge=lfs -text
-*.wav filter=lfs diff=lfs merge=lfs -text
-*.mp3 filter=lfs diff=lfs merge=lfs -text
-*.ogg filter=lfs diff=lfs merge=lfs -text
-*.ttf filter=lfs diff=lfs merge=lfs -text
-*.otf filter=lfs diff=lfs merge=lfs -text
-*.dll filter=lfs diff=lfs merge=lfs -text
-*.exr filter=lfs diff=lfs merge=lfs -text
-*.hdr filter=lfs diff=lfs merge=lfs -text
 *.png !text !filter !merge !diff
 *.jpg !text !filter !merge !diff
 *.jpeg !text !filter !merge !diff
