@@ -56,3 +56,6 @@ sysinfo.txt
 # === Addressables ===
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 /[Ss]erver[Dd]ata/
+
+# === Локальные документы и внутренние инструкции ===
+/Docs/

@@ -1,0 +1,87 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Состояние проекта
+
+Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Проект пока представляет собой почти нетронутый шаблон «URP Empty»: **C#-кода нет вообще**, единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings.
+
+Поэтому ниже описана не существующая архитектура, а **зафиксированные решения и ограничения**, которые нужно соблюдать при написании первого кода.
+
+## Команды
+
+Редактор: `C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe`
+
+Любой запуск в batch-режиме требует, чтобы проект **не был открыт в Unity Editor** — `Library/` залочена, второй процесс не стартует.
+
+Проверка компиляции (импорт + сборка скриптов, лог в stdout):
+
+```powershell
+& "C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe" -batchmode -quit -nographics `
+  -projectPath "D:\UnityProjects\MultiplayerDemo" -logFile -
+```
+
+Тесты (`com.unity.test-framework` 1.6.0 установлен, но тестовых сборок в `Assets/` ещё нет — их предстоит создать вместе с asmdef):
+
+```powershell
+& "C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe" -batchmode -nographics `
+  -projectPath "D:\UnityProjects\MultiplayerDemo" `
+  -runTests -testPlatform EditMode `
+  -testResults "$env:TEMP\results.xml" -logFile -
+```
+
+`-testPlatform PlayMode` — для playmode-тестов. Один тест или группа: `-testFilter "Namespace.Class.Method"` (принимает регулярку и список через запятую).
+
+CLI-сборки плеера пока невозможны: `-executeMethod` требует своего build-скрипта в `Assets/Editor/`, его ещё нет.
+
+## Как продолжать работу в новой сессии
+
+Проект реализуется по плану, задача за задачей. Порядок входа в работу:
+
+1. Прочитать **`Docs/Прогресс.md`** — там текущая задача, решения нулевого дня и журнал. Это единственный файл, который нужен, чтобы понять, где мы.
+2. Сверить с фактом: `git log --oneline -5` и `git status`. **При расхождении верить git**, а не файлу прогресса.
+3. Открыть **`Docs/2026-09-02-План реализации.md`** и прочитать **только раздел текущей задачи** (`## Задача N`) — план большой, целиком он не нужен.
+4. Прочитать `Docs/Код-стайл.md`, если в этой сессии предстоит писать код.
+5. Делать **одну задачу целиком**, затем остановиться с отчётом.
+
+**Протокол исполнения — не нарушать:** задача → отчёт из трёх строк (что компилируется, какие тесты прошли, что открыть в редакторе) → ревью владельца → его явное подтверждение → коммит. **`git push` не делать никогда**, пушит владелец сам. Правки по ревью входят в ту же задачу, коммит остаётся один.
+
+**В конце каждой задачи, до коммита, обновить `Docs/Прогресс.md`:** статус задачи, номер коммита, строку в журнале, а в фазе 0 — ещё и таблицу решений нулевого дня.
+
+Обоснования решений — в `Docs/2026-09-01-Дизайн сетевой демки.md`; открывать, когда возникает вопрос «почему именно так», а не при каждом старте.
+
+## Код-стайл
+
+Полный свод — **`Docs/Код-стайл.md`**, читать перед написанием первого кода. Файл лежит в `Docs/`, то есть в репозиторий не попадает: он локальный и переносится между проектами вручную.
+
+Коротко, чтобы не перечитывать каждый раз: явные модификаторы доступа везде (`private` у полей, `public` у членов интерфейсов); фиксированный порядок членов (поля → свойства → конструктор → инициализация → освобождение → остальные методы); конструктор всегда в фигурных скобках; скобки по Allman; `var` везде, где применимо; комментарии свободным текстом и про «почему»; namespace блочный; в DI регистрировать широким контрактом (`AsImplementedInterfaces().AsSelf()`), иначе контейнер молча проигнорирует появившийся позже `IDisposable` или `IStartable`.
+
+## Ограничения, влияющие на код
+
+**Только новая Input System.** `activeInputHandler: 1`, в дефайнах есть `ENABLE_INPUT_SYSTEM` и **нет** `ENABLE_LEGACY_INPUT_MANAGER` — `UnityEngine.Input.GetKey/GetAxis` не скомпилируются. Действия описаны в `Assets/InputSystem_Actions.inputactions` и подключены как **project-wide actions** (ссылка в `ProjectSettings/EditorBuildSettings.asset`, ключ `com.unity.input.settings.actions`) — расширять нужно этот ассет, а не заводить параллельные.
+
+**Две ветки качества URP.** Уровни `Mobile` и `PC` в QualitySettings ссылаются на разные RP-ассеты: `Assets/Settings/Mobile_RPAsset.asset` (+ `Mobile_Renderer.asset`) и `PC_RPAsset.asset` (+ `PC_Renderer.asset`); глобальные настройки — `UniversalRenderPipelineGlobalSettings.asset`. Изменение рендер-фич нужно вносить в обе пары, иначе оно проявится только на одном уровне качества (по умолчанию активен PC).
+
+**Netcode-стек ещё не выбран.** В manifest есть только `com.unity.multiplayer.center` 1.0.1 (окно-помощник), но нет ни Netcode for GameObjects, ни Netcode for Entities, ни Unity Transport. Прежде чем писать сетевой код — согласовать выбор стека с пользователем, а не ставить пакет по своему усмотрению.
+
+**Целевой рантайм:** .NET Standard 2.1 (`apiCompatibilityLevel: 6`), C# 9, Mono, платформа сборки — Standalone Windows.
+
+## Работа с git в этом репозитории
+
+**Git LFS сознательно не используется** — причина зафиксирована прямо в `.gitattributes`: бесплатная квота GitHub на аккаунте исчерпана, история уже мигрировалась обратно с LFS (коммит `668b8ac`). Не подключать LFS и не коммитить крупные бинарники; если объём ассетов вырастет — сначала обсудить миграцию.
+
+**UnityYAMLMerge объявлен, но не зарегистрирован.** `.gitattributes` помечает `*.unity`, `*.prefab`, `*.asset`, `*.meta`, `*.controller`, `*.anim`, `*.mat` и др. как `merge=unityyamlmerge`, однако драйвера в git config нет — конфликты в YAML сейчас сольются обычным текстовым мержем и почти наверняка сломают ассет. Регистрация драйвера:
+
+```powershell
+git config merge.unityyamlmerge.driver '"C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/Tools/UnityYAMLMerge.exe" merge -p %O %B %A %A'
+```
+
+Сериализация ассетов — Force Text (`m_SerializationMode: 2`), это то, на чём держится диффабельность; не переключать.
+
+Сообщения коммитов в этом репозитории — на русском.
+
+## Осколки шаблона (можно чистить)
+
+- `Assets/Readme.asset` ссылается на скрипт `Assets/TutorialInfo/Scripts/Readme.cs`, удалённый в коммите `f794a6c`, — в Editor это Missing MonoBehaviour. Ассет вместе с `.meta` можно удалять.
+- Корневые `*.csproj` / `*.sln` генерируются Unity и лежат в `.gitignore` (в них ещё висит ссылка на тот же удалённый `Readme.cs`) — не редактировать вручную.
+- `Docs/` — локальные документы и внутренние инструкции, папка в `.gitignore` и в репозиторий не попадает.
