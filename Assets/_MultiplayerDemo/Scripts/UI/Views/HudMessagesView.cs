@@ -1,12 +1,12 @@
 using Game.Core;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.UI
 {
     public sealed class HudMessagesView : MonoBehaviour, IHudMessages
     {
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
         [SerializeField] private float holdSeconds = 3f;
 
         private float _hideAt;

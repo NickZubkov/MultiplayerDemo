@@ -1,11 +1,15 @@
 {
-    "name": "Game.UI",
-    "rootNamespace": "Game.UI",
+    "name": "Game.Net.Ngo",
+    "rootNamespace": "Game.Net.Ngo",
     "references": [
         "Game.Core",
+        "Game.Gameplay",
+        "Game.App",
         "R3.Unity",
-        "UnityEngine.UI",
-        "Unity.TextMeshPro"
+        "UniTask",
+        "VContainer",
+        "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

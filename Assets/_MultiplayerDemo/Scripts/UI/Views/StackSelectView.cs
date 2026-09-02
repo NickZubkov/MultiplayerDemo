@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Core;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ namespace Game.UI
             foreach (var stack in stacks)
             {
                 var button = Instantiate(buttonTemplate, buttonRoot);
-                button.GetComponentInChildren<Text>().text = stack.DisplayName;
+                button.GetComponentInChildren<TMP_Text>().text = stack.DisplayName;
                 var captured = stack;
                 button.onClick.AddListener(() => _chosen.OnNext(captured));
                 button.gameObject.SetActive(true);

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Core;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,13 +9,13 @@ namespace Game.UI
 {
     public sealed class LobbyView : MonoBehaviour, ILobbyView
     {
-        [SerializeField] private InputField playerName;
-        [SerializeField] private InputField manualAddress;
+        [SerializeField] private TMP_InputField playerName;
+        [SerializeField] private TMP_InputField manualAddress;
         [SerializeField] private Button hostButton;
         [SerializeField] private Button joinManualButton;
         [SerializeField] private Button hostEntryTemplate;
         [SerializeField] private Transform hostListRoot;
-        [SerializeField] private Text emptyListHint;
+        [SerializeField] private TMP_Text emptyListHint;
 
         private readonly Subject<string> _hostRequested = new();
         private readonly Subject<HostEntry> _joinRequested = new();
@@ -49,7 +50,7 @@ namespace Game.UI
             foreach (var host in hosts)
             {
                 var row = Instantiate(hostEntryTemplate, hostListRoot);
-                row.GetComponentInChildren<Text>().text = $"{host.Name} — {host.Players}/{host.MaxPlayers}";
+                row.GetComponentInChildren<TMP_Text>().text = $"{host.Name} — {host.Players}/{host.MaxPlayers}";
                 var captured = host;
                 row.onClick.AddListener(() => _joinRequested.OnNext(captured));
                 row.gameObject.SetActive(true);
