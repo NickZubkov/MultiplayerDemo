@@ -59,3 +59,10 @@ sysinfo.txt
 
 # === Локальные документы и внутренние инструкции ===
 /Docs/
+
+# === Photon: AppId локальный, в репозиторий не попадает ===
+# Файл содержит только AppIdFusion поверх значений по умолчанию. Fusion
+# пересоздаёт его при первом открытии проекта, App Id вписывается руками
+# в Fusion → Realtime Settings. Репозиторий публичный — см. README.
+/Assets/Photon/Fusion/Resources/PhotonAppSettings.asset
+/Assets/Photon/Fusion/Resources/PhotonAppSettings.asset.meta

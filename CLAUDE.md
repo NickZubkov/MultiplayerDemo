@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Состояние проекта
 
-Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Проект пока представляет собой почти нетронутый шаблон «URP Empty»: **C#-кода нет вообще**, единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings.
+Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Основа — шаблон «URP Empty»: **своего C#-кода нет вообще**, единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings. Поверх шаблона установлены три сетевых стека (см. ниже), поэтому чужого кода в `Assets/` много — весь он вендорский и правке не подлежит.
 
 Поэтому ниже описана не существующая архитектура, а **зафиксированные решения и ограничения**, которые нужно соблюдать при написании первого кода.
 
@@ -20,6 +20,14 @@ Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Проект пока пре�
 & "C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe" -batchmode -quit -nographics `
   -projectPath "D:\UnityProjects\MultiplayerDemo" -logFile -
 ```
+
+**Этой команды мало, чтобы проверить кодогенерацию.** Bee держит артефакты в `Library/Bee` и при повторном запуске просто раскладывает готовые DLL шагами `CopyFiles` — ILPP и weaver'ы NGO, Mirror и Fusion при этом не работают, но лог всё равно даёт код 0 и ноль ошибок. Настоящая сборка видна по шагам `Csc` и `ILPostProcess` в логе. Чтобы её получить, убрать перед запуском **оба** каталога:
+
+```powershell
+Remove-Item -Recurse -Force Library\Bee, Library\ScriptAssemblies
+```
+
+Unity восстановит их сам. Полная пересборка — минуты, инкрементальная — секунды.
 
 Тесты (`com.unity.test-framework` 1.6.0 установлен, но тестовых сборок в `Assets/` ещё нет — их предстоит создать вместе с asmdef):
 
@@ -46,6 +54,8 @@ CLI-сборки плеера пока невозможны: `-executeMethod` т
 
 **Протокол исполнения — не нарушать:** задача → отчёт из трёх строк (что компилируется, какие тесты прошли, что открыть в редакторе) → ревью владельца → его явное подтверждение → коммит. **`git push` не делать никогда**, пушит владелец сам. Правки по ревью входят в ту же задачу, коммит остаётся один.
 
+**Ветки под задачи не заводить — работаем прямо в `main`.** Это решение владельца от 2 сентября 2026; оно перекрывает общее правило «сначала ветка, потом коммит».
+
 **В конце каждой задачи, до коммита, обновить `Docs/Прогресс.md`:** статус задачи, номер коммита, строку в журнале, а в фазе 0 — ещё и таблицу решений нулевого дня.
 
 Обоснования решений — в `Docs/2026-09-01-Дизайн сетевой демки.md`; открывать, когда возникает вопрос «почему именно так», а не при каждом старте.
@@ -62,7 +72,9 @@ CLI-сборки плеера пока невозможны: `-executeMethod` т
 
 **Две ветки качества URP.** Уровни `Mobile` и `PC` в QualitySettings ссылаются на разные RP-ассеты: `Assets/Settings/Mobile_RPAsset.asset` (+ `Mobile_Renderer.asset`) и `PC_RPAsset.asset` (+ `PC_Renderer.asset`); глобальные настройки — `UniversalRenderPipelineGlobalSettings.asset`. Изменение рендер-фич нужно вносить в обе пары, иначе оно проявится только на одном уровне качества (по умолчанию активен PC).
 
-**Netcode-стек ещё не выбран.** В manifest есть только `com.unity.multiplayer.center` 1.0.1 (окно-помощник), но нет ни Netcode for GameObjects, ни Netcode for Entities, ни Unity Transport. Прежде чем писать сетевой код — согласовать выбор стека с пользователем, а не ставить пакет по своему усмотрению.
+**Три сетевых стека стоят одновременно, и это сознательно.** Netcode for GameObjects 2.13.2, Multiplayer Play Mode 2.0.2 и Multiplayer Tools 2.2.11 — из Unity Registry; Mirror 96.x — в `Assets/Mirror`; Photon Fusion 2.1.1 Stable — в `Assets/Photon`. Проверено сборкой с нуля: все три кодогенератора работают в одном конвейере ILPP и не конфликтуют, разбор — в `Docs/Нулевой день.md` § 1.
+
+Из этого следует несколько правил. **Вендорские папки не трогать и не перемещать** — Fusion держится за буквальный путь `Assets/Photon` в трёх местах, включая `const string`. `Assets/ScriptTemplates` принадлежит Mirror и обязана лежать именно там: это служебная папка Unity. **Новые сетевые пакеты не ставить**, набор закрыт — UGS Multiplayer Services отклонён отдельным решением (D14 в дизайн-документе).
 
 **Целевой рантайм:** .NET Standard 2.1 (`apiCompatibilityLevel: 6`), C# 9, Mono, платформа сборки — Standalone Windows.
 
@@ -80,8 +92,8 @@ git config merge.unityyamlmerge.driver '"C:/Program Files/Unity/Hub/Editor/6000.
 
 Сообщения коммитов в этом репозитории — на русском.
 
-## Осколки шаблона (можно чистить)
+## Осколки шаблона
 
-- `Assets/Readme.asset` ссылается на скрипт `Assets/TutorialInfo/Scripts/Readme.cs`, удалённый в коммите `f794a6c`, — в Editor это Missing MonoBehaviour. Ассет вместе с `.meta` можно удалять.
+- `Assets/Readme.asset` (Missing MonoBehaviour от удалённого `TutorialInfo/Scripts/Readme.cs`) вычищен владельцем 2 сентября 2026 вместе с `.meta`.
 - Корневые `*.csproj` / `*.sln` генерируются Unity и лежат в `.gitignore` (в них ещё висит ссылка на тот же удалённый `Readme.cs`) — не редактировать вручную.
 - `Docs/` — локальные документы и внутренние инструкции, папка в `.gitignore` и в репозиторий не попадает.
