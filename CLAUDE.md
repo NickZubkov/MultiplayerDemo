@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Состояние проекта
 
-Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Основа — шаблон «URP Empty»: **своего C#-кода нет вообще**, единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings. Поверх шаблона установлены три сетевых стека (см. ниже), поэтому чужого кода в `Assets/` много — весь он вендорский и правке не подлежит.
+Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Основа — шаблон «URP Empty»: единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings. Поверх шаблона установлены три сетевых стека (см. ниже), поэтому чужого кода в `Assets/` много — весь он вендорский и правке не подлежит.
 
-Поэтому ниже описана не существующая архитектура, а **зафиксированные решения и ограничения**, которые нужно соблюдать при написании первого кода.
+**Всё своё живёт в `Assets/_MultiplayerDemo/`** — `Scripts/`, `Tests/`, а по мере появления `Scenes/`, `Prefabs/`, `Settings/`. Подчёркивание в начале имени держит папку первой в Project-окне. Правило простое: если файл создали мы, он внутри `_MultiplayerDemo`; всё остальное в `Assets/` — чужое. Исключение по существу одно: `Assets/Settings/*_RPAsset` и `*_Renderer` — на них завязаны QualitySettings и обе ветки качества URP. `Assets/Scenes/SampleScene.unity` исключение временное: своих сцен пока нет, и она держит единственную строку в Build Settings; в задаче 7, когда Build Settings перезаполнятся сценами `Bootstrap`, `Arena`, `Net_Ngo`, она удаляется вместе с папкой.
+
+Своего кода пока почти нет — пять пустых asmdef и один проверочный тест. Поэтому ниже описана не существующая архитектура, а **зафиксированные решения и ограничения**, которые нужно соблюдать при написании кода.
 
 ## Команды
 
@@ -79,7 +81,7 @@ Prefab Variant штатный инструмент не умеет: делать
 
 ## Ограничения, влияющие на код
 
-**Только новая Input System.** `activeInputHandler: 1`, в дефайнах есть `ENABLE_INPUT_SYSTEM` и **нет** `ENABLE_LEGACY_INPUT_MANAGER` — `UnityEngine.Input.GetKey/GetAxis` не скомпилируются. Действия описаны в `Assets/InputSystem_Actions.inputactions` и подключены как **project-wide actions** (ссылка в `ProjectSettings/EditorBuildSettings.asset`, ключ `com.unity.input.settings.actions`) — расширять нужно этот ассет, а не заводить параллельные.
+**Только новая Input System.** `activeInputHandler: 1`, в дефайнах есть `ENABLE_INPUT_SYSTEM` и **нет** `ENABLE_LEGACY_INPUT_MANAGER` — `UnityEngine.Input.GetKey/GetAxis` не скомпилируются. Действия описаны в `Assets/_MultiplayerDemo/Settings/InputSystem_Actions.inputactions` и подключены как **project-wide actions** (ссылка в `ProjectSettings/EditorBuildSettings.asset`, ключ `com.unity.input.settings.actions`) — расширять нужно этот ассет, а не заводить параллельные.
 
 **Две ветки качества URP.** Уровни `Mobile` и `PC` в QualitySettings ссылаются на разные RP-ассеты: `Assets/Settings/Mobile_RPAsset.asset` (+ `Mobile_Renderer.asset`) и `PC_RPAsset.asset` (+ `PC_Renderer.asset`); глобальные настройки — `UniversalRenderPipelineGlobalSettings.asset`. Изменение рендер-фич нужно вносить в обе пары, иначе оно проявится только на одном уровне качества (по умолчанию активен PC).
 
