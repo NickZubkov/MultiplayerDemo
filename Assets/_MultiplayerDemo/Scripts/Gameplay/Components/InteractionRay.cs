@@ -29,9 +29,9 @@ namespace Game.Gameplay
 
         private void Awake() => _rig = GetComponent<PlayerRig>();
 
-        private void OnEnable() => interactAction.action.performed += OnInteract;
+        private void OnEnable() => interactAction.action.performed += OnInteractPerformed;
 
-        private void OnDisable() => interactAction.action.performed -= OnInteract;
+        private void OnDisable() => interactAction.action.performed -= OnInteractPerformed;
 
         private void OnDestroy()
         {
@@ -39,7 +39,11 @@ namespace Game.Gameplay
             _dropRequested.Dispose();
         }
 
-        private void OnInteract(InputAction.CallbackContext _)
+        /// Имя не случайное: PlayerInput на этом же объекте работает в режиме Send Messages
+        /// и на каждое действие рассылает сообщение «On + имя действия». Обработчик с именем
+        /// OnInteract Unity нашла бы по имени, не подобрала бы сигнатуру под InputValue
+        /// и бросала бы MissingMethodException на каждое нажатие.
+        private void OnInteractPerformed(InputAction.CallbackContext _)
         {
             if (!_rig.IsLocal) return;
 

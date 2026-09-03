@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Game.App;
 using Game.Core;
+using Game.Gameplay;
 using UnityEngine;
 using VContainer;
 
@@ -20,9 +21,14 @@ namespace Game.Net.Ngo
         private static readonly string LocalAddress = "127.0.0.1:" + NgoSessionControl.Port;
 
         private ISessionControl _session;
+        private IWorldSpawner _spawner;
 
         [Inject]
-        public void Construct(ISessionControl session) => _session = session;
+        public void Construct(ISessionControl session, IWorldSpawner spawner)
+        {
+            _session = session;
+            _spawner = spawner;
+        }
 
         private void OnGUI()
         {
@@ -52,7 +58,11 @@ namespace Game.Net.Ngo
         private async UniTaskVoid HostAsync()
         {
             await SceneFlow.LoadAdditiveAsync(ArenaScene, destroyCancellationToken);
+
+            /// Точки отдаём до старта: место игрока NGO спрашивает уже внутри StartHost.
+            _spawner.UsePoints(FindAnyObjectByType<ArenaScopeInstaller>());
             await _session.StartHostAsync("Хост", destroyCancellationToken);
+            _spawner.SpawnItems();
         }
 
         private async UniTaskVoid JoinAsync()

@@ -159,7 +159,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a5313c336ebc4084bb0f68c9dd8b7a0f, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
+    ConnectionApproval: 1
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30
@@ -305,6 +305,8 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 1211051542}
   manager: {fileID: 691994777}
+  playerPrefab: {fileID: 4545786992028653958, guid: de5b9ec631a6cf345ae88f5e35ac427c, type: 3}
+  cratePrefab: {fileID: 1688181083647388690, guid: a0ec4c052a1f6f74da7a5b52a2fb4b09, type: 3}
 --- !u!4 &1228098349
 Transform:
   m_ObjectHideFlags: 0

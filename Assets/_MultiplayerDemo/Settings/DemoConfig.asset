@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game.Core::Game.Core.DemoConfig
   maxPlayerSpeed: 5.5
   speedTolerance: 1.5
-  throwImpulse: 5
+  throwImpulse: 25
   maxPlayers: 4
