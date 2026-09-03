@@ -17,6 +17,7 @@ namespace Game.Net.Ngo
         {
             builder.RegisterComponent(manager);
             builder.Register<NgoSessionControl>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
+            builder.Register<NgoHostBrowser>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.RegisterEntryPoint<NgoWorldSpawner>(
                        container => new NgoWorldSpawner(container, manager, cratePrefab), Lifetime.Scoped)
                    .AsSelf();
