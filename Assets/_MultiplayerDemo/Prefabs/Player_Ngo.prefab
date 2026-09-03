@@ -65,6 +65,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1796171819741422553}
+    - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7829973711017236101}
   m_SourcePrefab: {fileID: 100100000, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
 --- !u!114 &3382959874103177475 stripped
 MonoBehaviour:
@@ -170,6 +173,19 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   ray: {fileID: 8209920942533110600}
   holdPoint: {fileID: 3382959874103177475}
+--- !u!114 &7829973711017236101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4545786992028653958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecdf36c82f5c78543830ea8779bb1735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoSpeedGuard
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8209920942533110600 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5569206681219037454, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
