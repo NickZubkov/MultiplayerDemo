@@ -1,3 +1,4 @@
+using Game.App;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
@@ -21,6 +22,7 @@ namespace Game.Net.Ngo
             builder.RegisterEntryPoint<NgoWorldSpawner>(
                        container => new NgoWorldSpawner(container, manager, cratePrefab), Lifetime.Scoped)
                    .AsSelf();
+            builder.RegisterEntryPoint<LobbyPresenter>(Lifetime.Scoped).AsSelf();
 
             /// Оба префаба создаёт сеть, а не контейнер: игрока NGO спавнит сама при
             /// подключении, ящики — хост. Обработчик ставим на уже собранный контейнер

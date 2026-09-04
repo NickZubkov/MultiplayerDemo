@@ -36,6 +36,10 @@ namespace Game.UI
             _joinRequested.Dispose();
         }
 
+        public void Show() => gameObject.SetActive(true);
+
+        public void Hide() => gameObject.SetActive(false);
+
         /// Ручной ввод адреса — план Б: широковещание режется гостевым Wi-Fi,
         /// и остаться без способа подключиться на собеседовании недопустимо.
         public void ShowHosts(IReadOnlyList<HostEntry> hosts)
