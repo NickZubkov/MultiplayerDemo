@@ -33,17 +33,25 @@ namespace Game.Net.Ngo
             builder.RegisterInstance<NetworkStackDefinition>(stack);
             builder.RegisterComponent(manager);
 
+            /// Lifetime.Singleton, а не Scoped, у всего в этом scope — и это не про «один
+            /// на приложение»: регистрация объявлена здесь, поэтому экземпляр создаётся здесь
+            /// и умирает вместе со сценой стека. Разница в дочерних scope: Scoped VContainer
+            /// пересоздаёт в том контейнере, где резолвят (Container.cs:161), а Singleton
+            /// поднимает к родителю. Из-за Scoped ArenaScope получал собственную копию
+            /// IWorldSpawner, отдавал точки ей, и ящики не появлялись — спавнер, которого
+            /// звал презентер, оставался без точек.
+            ///
             /// ArenaLoader просит LifetimeScope, чтобы накрыть сцену арены родителем.
             /// Регистрировать scope не нужно: VContainer делает это сам последней строкой
             /// LifetimeScope.InstallTo, и вторая такая регистрация ломает сборку контейнера
             /// конфликтом типов реализации.
-            builder.Register<ArenaLoader>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
-            builder.Register<NgoSessionControl>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
-            builder.Register<NgoHostBrowser>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
+            builder.Register<ArenaLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<NgoSessionControl>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<NgoHostBrowser>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterEntryPoint<NgoWorldSpawner>(
-                       container => new NgoWorldSpawner(container, manager, cratePrefab), Lifetime.Scoped)
+                       container => new NgoWorldSpawner(container, manager, cratePrefab), Lifetime.Singleton)
                    .AsSelf();
-            builder.RegisterEntryPoint<LobbyPresenter>(Lifetime.Scoped).AsSelf();
+            builder.RegisterEntryPoint<LobbyPresenter>(Lifetime.Singleton).AsSelf();
 
             /// Оба префаба создаёт сеть, а не контейнер: игрока NGO спавнит сама при
             /// подключении, ящики — хост. Обработчик ставим на уже собранный контейнер

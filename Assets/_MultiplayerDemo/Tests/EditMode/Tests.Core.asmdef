@@ -5,6 +5,7 @@
         "Game.Core",
         "Game.App",
         "R3.Unity",
+        "VContainer",
         "UniTask",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

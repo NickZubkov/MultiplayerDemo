@@ -2054,6 +2054,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0d0a2e405b82e924da17567d4981b903, type: 2}
   arenas:
   - {fileID: 11400000, guid: d9df38f757fd2774ca80d7d2a25fb5fb, type: 2}
+  - {fileID: 11400000, guid: 166a4eb93568cfe43a91095bceb4f862, type: 2}
+  - {fileID: 11400000, guid: c4759881335b3614a83f5647b1e0f32d, type: 2}
 --- !u!4 &1103615243
 Transform:
   m_ObjectHideFlags: 0
