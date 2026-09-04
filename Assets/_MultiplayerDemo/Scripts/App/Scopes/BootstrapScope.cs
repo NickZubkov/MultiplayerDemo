@@ -13,6 +13,7 @@ namespace Game.App
         [SerializeField] private StackSelectView stackSelectView;
         [SerializeField] private LobbyView lobbyView;
         [SerializeField] private HudMessagesView hudView;
+        [SerializeField] private PauseView pauseView;
         [SerializeField] private NetworkStackDefinition[] stacks;
         [SerializeField] private ArenaDefinition[] arenas;
 
@@ -21,8 +22,12 @@ namespace Game.App
             builder.RegisterComponent<IStackSelectView>(stackSelectView);
             builder.RegisterComponent<ILobbyView>(lobbyView);
             builder.RegisterComponent<IHudMessages>(hudView);
+            builder.RegisterComponent<IPauseView>(pauseView);
             builder.RegisterInstance(stacks);
             builder.RegisterInstance(arenas);
+            /// AsImplementedInterfaces тут не нужен: RegisterEntryPoint делает его сам,
+            /// а повторный контракт роняет сборку конфликтом типов реализации.
+            builder.RegisterEntryPoint<StackFlow>().AsSelf();
             builder.RegisterEntryPoint<StackSelectPresenter>();
         }
     }

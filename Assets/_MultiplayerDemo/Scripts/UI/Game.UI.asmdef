@@ -4,6 +4,7 @@
     "references": [
         "Game.Core",
         "R3.Unity",
+        "Unity.InputSystem",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
     ],

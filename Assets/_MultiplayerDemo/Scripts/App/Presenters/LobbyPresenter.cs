@@ -8,12 +8,12 @@ using VContainer.Unity;
 namespace Game.App
 {
     /// Живёт в scope стека: ему нужны ISessionControl, IHostBrowser и IWorldSpawner.
-    /// View приходит из родительского scope сцены Bootstrap, поэтому сам презентер
+    /// Виды приходят из родительского scope сцены Bootstrap, поэтому сам презентер
     /// про конкретный стек ничего не знает — в Mirror и Fusion он тот же самый.
     public sealed class LobbyPresenter : IStartable, IDisposable
     {
-        /// Широковещание режется гостевым Wi-Fi и брандмауэром, поэтому пустой список
-        /// сам по себе ни о чём не говорит — подсказка уводит к ручному вводу адреса.
+        /// Широковещание режется брандмауэром и не ходит между сегментами сети, поэтому
+        /// пустой список сам по себе ни о чём не говорит — подсказка уводит к ручному вводу.
         private const string EmptyHint = "Хостов не видно. Проверьте, что оба в одной сети, или введите адрес вручную.";
 
         private const string UnknownFailure = "Не удалось подключиться";
@@ -24,29 +24,39 @@ namespace Game.App
         private readonly ISessionControl _session;
         private readonly IWorldSpawner _spawner;
         private readonly IArenaLoader _arena;
+        private readonly IStackFlow _stackFlow;
         private readonly IHudMessages _hud;
         private readonly ILobbyView _view;
+        private readonly IPauseView _pause;
         private readonly DemoConfig _config;
+        private readonly NetworkStackDefinition _stack;
         private readonly ArenaDefinition[] _arenas;
 
         private DisposableBag _subscriptions;
 
         /// Отмеченный уровень — состояние экрана, а не разделяемое состояние: он нужен
-        /// только хосту и только до старта. Колонка выбора появится в задаче 11.3,
-        /// пока это первый уровень каталога.
+        /// только хосту и только до старта. Клиент берёт уровень из строки хоста.
         private ArenaDefinition _selectedArena;
 
+        private bool _paused;
+
+        private bool InMatch =>
+            _session.State.CurrentValue.Phase is SessionPhase.Hosting or SessionPhase.Connected;
+
         public LobbyPresenter(IHostBrowser browser, ISessionControl session, IWorldSpawner spawner,
-            IArenaLoader arena, IHudMessages hud, ILobbyView view, DemoConfig config,
-            ArenaDefinition[] arenas)
+            IArenaLoader arena, IStackFlow stackFlow, IHudMessages hud, ILobbyView view, IPauseView pause,
+            DemoConfig config, NetworkStackDefinition stack, ArenaDefinition[] arenas)
         {
             _browser = browser;
             _session = session;
             _spawner = spawner;
             _arena = arena;
+            _stackFlow = stackFlow;
             _hud = hud;
             _view = view;
+            _pause = pause;
             _config = config;
+            _stack = stack;
             _arenas = arenas;
             _selectedArena = arenas.Length > 0 ? arenas[0] : null;
         }
@@ -54,6 +64,9 @@ namespace Game.App
         public void Start()
         {
             _view.SetEmptyHint(EmptyHint);
+            _view.SetManualHint(_stack.ManualEntryHint);
+            _view.ShowArenas(_arenas);
+            _view.MarkArena(_selectedArena);
 
             _browser.Hosts
                     .Subscribe(_view.ShowHosts)
@@ -77,6 +90,26 @@ namespace Game.App
             _view.JoinRequested
                  .SubscribeAwait((entry, token) => JoinAsync(entry, token), AwaitOperation.Drop)
                  .AddTo(ref _subscriptions);
+
+            _view.ArenaChosen
+                 .Subscribe(SelectArena)
+                 .AddTo(ref _subscriptions);
+
+            _view.BackToStacksRequested
+                 .SubscribeAwait((_, _) => BackToStacksAsync(), AwaitOperation.Drop)
+                 .AddTo(ref _subscriptions);
+
+            _pause.ToggleRequested
+                  .Subscribe(_ => TogglePause())
+                  .AddTo(ref _subscriptions);
+
+            _pause.ResumeRequested
+                  .Subscribe(_ => ClosePause(true))
+                  .AddTo(ref _subscriptions);
+
+            _pause.ExitRequested
+                  .SubscribeAwait((_, _) => ExitToLobbyAsync(), AwaitOperation.Drop)
+                  .AddTo(ref _subscriptions);
 
             _browser.StartBrowsing();
         }
@@ -142,6 +175,12 @@ namespace Game.App
             return null;
         }
 
+        private void SelectArena(ArenaDefinition arena)
+        {
+            _selectedArena = arena;
+            _view.MarkArena(arena);
+        }
+
         /// Панель лобби в сцене Bootstrap выключена и включается отсюда: в арене она
         /// перекрывала бы обзор, а после отказа обязана вернуться — иначе игрок
         /// останется смотреть на пустую сцену без единой кнопки.
@@ -157,11 +196,51 @@ namespace Game.App
             }
         }
 
+        /// Вне матча пауза бессмысленна: в лобби курсор и так свободен, а выходить неоткуда.
+        private void TogglePause()
+        {
+            if (!InMatch) return;
+
+            if (_paused)
+            {
+                ClosePause(true);
+                return;
+            }
+
+            _paused = true;
+            _pause.Show();
+        }
+
+        private void ClosePause(bool captureCursor)
+        {
+            if (!_paused) return;
+
+            _paused = false;
+            _pause.Hide(captureCursor);
+        }
+
+        /// Курсор в захват не возвращаем: впереди лобби, там он нужен игроку.
+        private async UniTask ExitToLobbyAsync()
+        {
+            ClosePause(false);
+            await LeaveAsync();
+        }
+
+        /// Сцену стека выгружает StackFlow из scope лобби: этот презентер живёт в ней же
+        /// и до конца операции не дожил бы. Сессию и арену закрываем до просьбы —
+        /// рвать надо снизу вверх.
+        private async UniTask BackToStacksAsync()
+        {
+            await LeaveAsync();
+            _stackFlow.RequestBackToSelect();
+        }
+
         /// Пункт 8 чек-листа: закрытый хост не должен оставить клиента в пустой арене.
         /// Причина отказа уходит в HUD до выгрузки — сообщение переживает смену сцены.
         private async UniTask FailAsync(SessionState state)
         {
             _hud.Show(string.IsNullOrEmpty(state.Reason) ? UnknownFailure : state.Reason);
+            ClosePause(false);
             await LeaveAsync();
         }
     }

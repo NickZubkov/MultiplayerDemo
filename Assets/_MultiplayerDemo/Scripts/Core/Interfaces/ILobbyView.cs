@@ -9,10 +9,18 @@ namespace Game.Core
     {
         public Observable<string> HostRequested { get; }
         public Observable<HostEntry> JoinRequested { get; }
+        public Observable<ArenaDefinition> ArenaChosen { get; }
+        public Observable<Unit> BackToStacksRequested { get; }
 
         public void Show();
         public void Hide();
         public void ShowHosts(IReadOnlyList<HostEntry> hosts);
+
+        /// Каталог отдаётся целиком: по нему вид не только рисует колонку уровней,
+        /// но и подписывает строки хостов — в маяке едет id, а игрок читает название.
+        public void ShowArenas(IReadOnlyList<ArenaDefinition> arenas);
+        public void MarkArena(ArenaDefinition arena);
         public void SetEmptyHint(string text);
+        public void SetManualHint(string text);
     }
 }

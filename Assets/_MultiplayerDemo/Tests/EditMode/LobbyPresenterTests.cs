@@ -133,6 +133,53 @@ namespace Game.Core.Tests
             public void SpawnItems() => _log.Add("items");
         }
 
+        private sealed class FakePauseView : IPauseView
+        {
+            private readonly Subject<Unit> _toggle = new();
+            private readonly Subject<Unit> _resume = new();
+            private readonly Subject<Unit> _exit = new();
+
+            public bool Visible;
+            public bool CursorCapturedOnHide;
+
+            public Observable<Unit> ToggleRequested => _toggle;
+            public Observable<Unit> ResumeRequested => _resume;
+            public Observable<Unit> ExitRequested => _exit;
+
+            public void Show() => Visible = true;
+
+            public void Hide(bool captureCursor)
+            {
+                Visible = false;
+                CursorCapturedOnHide = captureCursor;
+            }
+
+            public void PressCancel() => _toggle.OnNext(Unit.Default);
+
+            public void ClickResume() => _resume.OnNext(Unit.Default);
+
+            public void ClickExit() => _exit.OnNext(Unit.Default);
+        }
+
+        private sealed class FakeStackFlow : IStackFlow
+        {
+            private readonly Subject<Unit> _back = new();
+
+            public bool BackRequested;
+
+            public Observable<Unit> BackToSelect => _back;
+
+            public UniTask LoadAsync(NetworkStackDefinition stack, CancellationToken token) => UniTask.CompletedTask;
+
+            public void RequestBackToSelect() => BackRequested = true;
+        }
+
+        /// NetworkStackDefinition абстрактен — наследников заводят стеки, а тестам
+        /// достаточно пустого: нужны только значения полей по умолчанию.
+        private sealed class FakeStack : NetworkStackDefinition
+        {
+        }
+
         private sealed class FakeHud : IHudMessages
         {
             public string Last;
@@ -145,12 +192,20 @@ namespace Game.Core.Tests
             private readonly Subject<string> _host = new();
             private readonly Subject<HostEntry> _join = new();
 
+            private readonly Subject<ArenaDefinition> _arenaChosen = new();
+            private readonly Subject<Unit> _backToStacks = new();
+
             public IReadOnlyList<HostEntry> Shown = Array.Empty<HostEntry>();
+            public IReadOnlyList<ArenaDefinition> ShownArenas = Array.Empty<ArenaDefinition>();
+            public ArenaDefinition MarkedArena;
             public string Hint;
+            public string ManualHint;
             public bool Visible;
 
             public Observable<string> HostRequested => _host;
             public Observable<HostEntry> JoinRequested => _join;
+            public Observable<ArenaDefinition> ArenaChosen => _arenaChosen;
+            public Observable<Unit> BackToStacksRequested => _backToStacks;
 
             public void Show() => Visible = true;
 
@@ -158,11 +213,21 @@ namespace Game.Core.Tests
 
             public void ShowHosts(IReadOnlyList<HostEntry> hosts) => Shown = hosts;
 
+            public void ShowArenas(IReadOnlyList<ArenaDefinition> arenas) => ShownArenas = arenas;
+
+            public void MarkArena(ArenaDefinition arena) => MarkedArena = arena;
+
             public void SetEmptyHint(string text) => Hint = text;
+
+            public void SetManualHint(string text) => ManualHint = text;
 
             public void ClickHost(string name) => _host.OnNext(name);
 
             public void ClickJoin(HostEntry entry) => _join.OnNext(entry);
+
+            public void ChooseArena(ArenaDefinition arena) => _arenaChosen.OnNext(arena);
+
+            public void ClickBackToStacks() => _backToStacks.OnNext(Unit.Default);
         }
 
         private sealed class Rig
@@ -174,8 +239,12 @@ namespace Game.Core.Tests
             public readonly FakeArena ArenaFlow;
             public readonly FakeHud Hud;
             public readonly FakeLobbyView View;
+            public readonly FakePauseView Pause;
+            public readonly FakeStackFlow StackFlow;
             public readonly DemoConfig Config;
+            public readonly NetworkStackDefinition Stack;
             public readonly ArenaDefinition Arena;
+            public readonly ArenaDefinition SecondArena;
             public readonly LobbyPresenter Presenter;
 
             public Rig()
@@ -186,10 +255,14 @@ namespace Game.Core.Tests
                 ArenaFlow = new FakeArena(Log);
                 Hud = new FakeHud();
                 View = new FakeLobbyView();
+                Pause = new FakePauseView();
+                StackFlow = new FakeStackFlow();
                 Config = ScriptableObject.CreateInstance<DemoConfig>();
+                Stack = ScriptableObject.CreateInstance<FakeStack>();
                 Arena = ScriptableObject.CreateInstance<ArenaDefinition>();
-                Presenter = new LobbyPresenter(Browser, Session, Spawner, ArenaFlow, Hud, View, Config,
-                    new[] { Arena });
+                SecondArena = ScriptableObject.CreateInstance<ArenaDefinition>();
+                Presenter = new LobbyPresenter(Browser, Session, Spawner, ArenaFlow, StackFlow, Hud, View,
+                    Pause, Config, Stack, new[] { Arena, SecondArena });
             }
         }
 
@@ -285,6 +358,94 @@ namespace Game.Core.Tests
             Assert.IsNull(rig.Session.LastJoinToken);
             Assert.AreEqual("Хост играет на уровне, которого нет в этой сборке", rig.Hud.Last);
             Assert.AreEqual(0, rig.ArenaFlow.Loads);
+        }
+
+        [Test]
+        public void ChosenArenaIsMarkedAndUsedForHosting()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            Assert.AreEqual(rig.Arena, rig.View.MarkedArena);
+
+            rig.View.ChooseArena(rig.SecondArena);
+            rig.View.ClickHost("Коля");
+
+            Assert.AreEqual(rig.SecondArena, rig.View.MarkedArena);
+            Assert.AreEqual(rig.SecondArena, rig.ArenaFlow.LoadedArena);
+        }
+
+        /// Подпись поля ручного ввода приходит из описания стека: у Fusion там имя сессии.
+        [Test]
+        public void ManualHintComesFromStack()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+
+            Assert.AreEqual(rig.Stack.ManualEntryHint, rig.View.ManualHint);
+        }
+
+        /// В лобби пауза бессмысленна: выходить неоткуда, а курсор и так свободен.
+        [Test]
+        public void PauseOpensOnlyInMatch()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+
+            rig.Pause.PressCancel();
+            Assert.IsFalse(rig.Pause.Visible);
+
+            rig.View.ClickHost("Коля");
+            rig.Pause.PressCancel();
+
+            Assert.IsTrue(rig.Pause.Visible);
+        }
+
+        [Test]
+        public void ResumeClosesPauseAndReturnsCursorToMatch()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            rig.View.ClickHost("Коля");
+            rig.Pause.PressCancel();
+
+            rig.Pause.ClickResume();
+
+            Assert.IsFalse(rig.Pause.Visible);
+            Assert.IsTrue(rig.Pause.CursorCapturedOnHide);
+        }
+
+        /// Выход из матча: сессия закрыта, арена выгружена, лобби на экране,
+        /// курсор остаётся свободным — он нужен для кнопок лобби.
+        [Test]
+        public void ExitFromPauseReturnsToLobby()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            rig.View.ClickHost("Коля");
+            rig.Pause.PressCancel();
+
+            rig.Pause.ClickExit();
+
+            Assert.IsTrue(rig.Session.Left);
+            Assert.AreEqual(1, rig.ArenaFlow.Unloads);
+            Assert.IsTrue(rig.View.Visible);
+            Assert.IsFalse(rig.Pause.CursorCapturedOnHide);
+        }
+
+        /// Сцену стека презентер не трогает: он живёт в ней самой и до конца выгрузки
+        /// не дожил бы — просьба уходит в StackFlow из scope лобби.
+        [Test]
+        public void BackToStacksClosesMatchAndAsksFlow()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            rig.View.ClickHost("Коля");
+
+            rig.View.ClickBackToStacks();
+
+            Assert.IsTrue(rig.Session.Left);
+            Assert.AreEqual(1, rig.ArenaFlow.Unloads);
+            Assert.IsTrue(rig.StackFlow.BackRequested);
         }
 
         /// Пункт 8 чек-листа: закрытый хост не оставляет клиента в пустой арене.

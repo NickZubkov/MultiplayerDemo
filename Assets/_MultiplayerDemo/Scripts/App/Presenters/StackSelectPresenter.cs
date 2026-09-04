@@ -14,14 +14,16 @@ namespace Game.App
     {
         private readonly IStackSelectView _view;
         private readonly NetworkStackDefinition[] _stacks;
+        private readonly IStackFlow _flow;
         private readonly CancellationTokenSource _lifetime = new();
 
         private DisposableBag _subscriptions;
 
-        public StackSelectPresenter(IStackSelectView view, NetworkStackDefinition[] stacks)
+        public StackSelectPresenter(IStackSelectView view, NetworkStackDefinition[] stacks, IStackFlow flow)
         {
             _view = view;
             _stacks = stacks;
+            _flow = flow;
         }
 
         public void Start()
@@ -29,6 +31,12 @@ namespace Game.App
             _view.Show(_stacks);
             _view.StackChosen
                  .SubscribeAwait((stack, token) => LoadAsync(stack, token), AwaitOperation.Drop)
+                 .AddTo(ref _subscriptions);
+
+            /// Из лобби можно вернуться сюда: сцену стека к этому моменту уже выгрузил
+            /// StackFlow, нам остаётся показать экран.
+            _flow.BackToSelect
+                 .Subscribe(_ => _view.Show(_stacks))
                  .AddTo(ref _subscriptions);
         }
 
@@ -41,17 +49,9 @@ namespace Game.App
 
         /// AwaitOperation.Drop: пока сцена грузится, повторные нажатия игнорируются —
         /// то, что в корутинной версии пришлось бы городить флагом.
-        ///
-        /// EnqueueParent возвращает ParentOverrideScope и обязан жить только на время
-        /// загрузки: иначе подставленный родитель остаётся в глобальном стеке VContainer
-        /// и достаётся первому же следующему scope, который создадут.
         private async UniTask LoadAsync(NetworkStackDefinition stack, CancellationToken token)
         {
-            using (LifetimeScope.EnqueueParent(LifetimeScope.Find<BootstrapScope>()))
-            {
-                await SceneFlow.LoadAdditiveAsync(stack.ManagerScene, token);
-            }
-
+            await _flow.LoadAsync(stack, token);
             _view.Hide();
         }
     }

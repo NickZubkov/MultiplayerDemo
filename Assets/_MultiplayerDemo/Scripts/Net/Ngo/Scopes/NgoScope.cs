@@ -1,4 +1,5 @@
 using Game.App;
+using Game.Core;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
@@ -20,12 +21,16 @@ namespace Game.Net.Ngo
     /// на случай, если там забудут проставить parentReference.
     public sealed class NgoScope : LifetimeScope
     {
+        [SerializeField] private NgoStackDefinition stack;
         [SerializeField] private NetworkManager manager;
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject cratePrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
+            /// Своё описание стека scope отдаёт как базовый тип: презентеру лобби нужна
+            /// подпись поля ручного ввода, а знать про NGO он не должен.
+            builder.RegisterInstance<NetworkStackDefinition>(stack);
             builder.RegisterComponent(manager);
 
             /// ArenaLoader просит LifetimeScope, чтобы накрыть сцену арены родителем.
