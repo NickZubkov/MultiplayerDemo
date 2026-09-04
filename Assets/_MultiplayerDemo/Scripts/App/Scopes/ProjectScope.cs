@@ -14,7 +14,6 @@ namespace Game.App
         {
             builder.RegisterInstance(config);
             builder.Register<UnityClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<ArenaLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }
 }

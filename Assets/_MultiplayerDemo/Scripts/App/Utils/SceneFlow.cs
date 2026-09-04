@@ -22,10 +22,16 @@ namespace Game.App
         {
             foreach (var name in sceneNames)
             {
-                if (SceneManager.GetSceneByName(name).isLoaded)
-                {
-                    await SceneManager.UnloadSceneAsync(name).ToUniTask();
-                }
+                if (!SceneManager.GetSceneByName(name).isLoaded) continue;
+
+                /// При выходе из плеера сцены сносит сам Unity, и UnloadSceneAsync
+                /// возвращает null. Сюда мы попадаем именно в этот момент: NetworkManager
+                /// на OnApplicationQuit шлёт отключение, презентер видит Failed и идёт
+                /// выгружать арену.
+                var unloading = SceneManager.UnloadSceneAsync(name);
+                if (unloading == null) continue;
+
+                await unloading.ToUniTask();
             }
         }
     }

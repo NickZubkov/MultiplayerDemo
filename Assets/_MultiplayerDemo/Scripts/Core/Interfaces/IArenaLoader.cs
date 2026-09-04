@@ -7,11 +7,11 @@ namespace Game.Core
     /// не проверить в EditMode — SceneManager вне плеера сцену не грузит, а порядок
     /// «сначала пол, потом сессия» — ровно то, что здесь важно не сломать.
     ///
-    /// Возвращает точки спавна, а не голый UniTask: искать их по сцене — дело того,
-    /// кто её загрузил, и незачем тащить Game.Gameplay в презентер и в тесты.
+    /// Точки спавна наружу не возвращаются: их регистрирует ArenaScope сцены и сам же
+    /// отдаёт спавнеру стека. Загрузчику остаётся сцена и ничего больше.
     public interface IArenaLoader
     {
-        public UniTask<ISpawnPointRegistry> LoadAsync(ArenaDefinition arena, CancellationToken token);
+        public UniTask LoadAsync(ArenaDefinition arena, CancellationToken token);
         public UniTask UnloadAsync();
     }
 }

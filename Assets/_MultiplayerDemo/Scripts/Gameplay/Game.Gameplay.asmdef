@@ -4,6 +4,7 @@
     "references": [
         "Game.Core",
         "R3.Unity",
+        "VContainer",
         "Unity.InputSystem",
         "Unity.Cinemachine"
     ],

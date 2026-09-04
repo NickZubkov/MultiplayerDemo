@@ -27,6 +27,12 @@ namespace Game.Net.Ngo
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent(manager);
+
+            /// ArenaLoader просит LifetimeScope, чтобы накрыть сцену арены родителем.
+            /// Регистрировать scope не нужно: VContainer делает это сам последней строкой
+            /// LifetimeScope.InstallTo, и вторая такая регистрация ломает сборку контейнера
+            /// конфликтом типов реализации.
+            builder.Register<ArenaLoader>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.Register<NgoSessionControl>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.Register<NgoHostBrowser>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.RegisterEntryPoint<NgoWorldSpawner>(

@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace Game.Gameplay
 {
-    /// Живёт в сцене Arena: собирает маркеры при загрузке и отдаёт их как ISpawnPointRegistry.
+    /// Живёт в сцене арены: собирает маркеры при загрузке и отдаёт их как ISpawnPointRegistry.
     /// Статические списки в маркерах не нужны.
-    public sealed class ArenaScopeInstaller : MonoBehaviour, ISpawnPointRegistry
+    ///
+    /// Регистрацией занимается ArenaScope, а не этот класс: он только про точки,
+    /// поэтому и называется по содержимому, а не по роли в контейнере.
+    public sealed class ArenaSpawnPoints : MonoBehaviour, ISpawnPointRegistry
     {
         private readonly List<SpawnPoint> _players = new();
         private readonly List<SpawnPoint> _items = new();

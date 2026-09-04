@@ -92,14 +92,15 @@ namespace Game.App
         }
 
         /// Порядок не косметический: NGO спавнит игрока прямо внутри StartHost, и без
-        /// загруженного пола капсула улетает вниз (проверено в задаче 7). Поэтому арена
-        /// и точки спавна — до старта сессии, ящики — после: до старта сервера их некуда класть.
+        /// загруженного пола капсула улетает вниз (проверено в задаче 7). Поэтому арена —
+        /// до старта сессии, ящики — после: до старта сервера их некуда класть. Точки
+        /// спавнер получает сам, от ArenaScope, в момент загрузки сцены.
         ///
         /// AwaitOperation.Drop у подписки: пока идёт подключение или загрузка сцены,
         /// повторные нажатия игнорируются — в корутинной версии это был бы ручной флаг.
         private async UniTask HostAsync(string playerName, CancellationToken token)
         {
-            _spawner.UsePoints(await _arena.LoadAsync(_selectedArena, token));
+            await _arena.LoadAsync(_selectedArena, token);
             await _session.StartHostAsync(playerName, token);
             _spawner.SpawnItems();
 

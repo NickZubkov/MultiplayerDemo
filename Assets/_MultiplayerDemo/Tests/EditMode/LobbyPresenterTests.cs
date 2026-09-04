@@ -98,12 +98,12 @@ namespace Game.Core.Tests
                 _log = log;
             }
 
-            public UniTask<ISpawnPointRegistry> LoadAsync(ArenaDefinition arena, CancellationToken token)
+            public UniTask LoadAsync(ArenaDefinition arena, CancellationToken token)
             {
                 Loads++;
                 LoadedArena = arena;
                 _log.Add("arena");
-                return UniTask.FromResult<ISpawnPointRegistry>(null);
+                return UniTask.CompletedTask;
             }
 
             public UniTask UnloadAsync()
@@ -118,12 +118,17 @@ namespace Game.Core.Tests
         {
             private readonly List<string> _log;
 
+            public bool PointsTaken;
+
             public FakeSpawner(List<string> log)
             {
                 _log = log;
             }
 
-            public void UsePoints(ISpawnPointRegistry points) => _log.Add("points");
+            /// Презентер этот метод больше не зовёт: точки спавнеру отдаёт ArenaScope
+            /// в момент загрузки сцены. В журнал не пишем — иначе тест порядка ждал бы
+            /// вызова, которого в этом месте потока уже нет.
+            public void UsePoints(ISpawnPointRegistry points) => PointsTaken = true;
 
             public void SpawnItems() => _log.Add("items");
         }
@@ -239,7 +244,7 @@ namespace Game.Core.Tests
 
             rig.View.ClickHost("Коля");
 
-            CollectionAssert.AreEqual(new[] { "arena", "points", "host", "items", "advertise" }, rig.Log);
+            CollectionAssert.AreEqual(new[] { "arena", "host", "items", "advertise" }, rig.Log);
         }
 
         [Test]
