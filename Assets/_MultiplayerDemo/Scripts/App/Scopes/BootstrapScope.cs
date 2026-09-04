@@ -14,6 +14,7 @@ namespace Game.App
         [SerializeField] private LobbyView lobbyView;
         [SerializeField] private HudMessagesView hudView;
         [SerializeField] private NetworkStackDefinition[] stacks;
+        [SerializeField] private ArenaDefinition[] arenas;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -21,6 +22,7 @@ namespace Game.App
             builder.RegisterComponent<ILobbyView>(lobbyView);
             builder.RegisterComponent<IHudMessages>(hudView);
             builder.RegisterInstance(stacks);
+            builder.RegisterInstance(arenas);
             builder.RegisterEntryPoint<StackSelectPresenter>();
         }
     }

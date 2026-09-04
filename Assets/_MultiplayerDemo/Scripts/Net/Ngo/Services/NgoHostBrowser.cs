@@ -32,6 +32,7 @@ namespace Game.Net.Ngo
         private IDisposable _pump;
         private string _localAddress;
         private string _advertisedName;
+        private string _advertisedArena;
         private int _players;
         private int _maxPlayers;
         private double _lastBeaconAt = double.NegativeInfinity;
@@ -74,11 +75,12 @@ namespace Game.Net.Ngo
 
         /// Вызывает презентер после успешного старта хоста. Первый маяк уйдёт в ближайшем
         /// кадре, но только пока идёт поиск: приём и отправка висят на одном насосе.
-        public void Advertise(string hostName, int players, int maxPlayers)
+        public void Advertise(string hostName, int players, int maxPlayers, string arenaId)
         {
             _advertisedName = hostName;
             _players = players;
             _maxPlayers = maxPlayers;
+            _advertisedArena = arenaId;
         }
 
         private void Drain()
@@ -99,7 +101,7 @@ namespace Game.Net.Ngo
 
             _lastBeaconAt = _clock.Now;
             var entry = new HostEntry(_advertisedName, _players, _maxPlayers, OwnStackId,
-                $"{LocalAddress()}:{NgoSessionControl.Port}");
+                $"{LocalAddress()}:{NgoSessionControl.Port}", _advertisedArena);
             _socket.Send(LanBeaconCodec.Encode(entry));
         }
 

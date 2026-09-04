@@ -4,7 +4,7 @@ namespace Game.Core.Tests
 {
     public sealed class HostRegistryTests
     {
-        private static HostEntry Host(string token, int players = 1) => new HostEntry("Коля", players, 4, "ngo", token);
+        private static HostEntry Host(string token, int players = 1) => new HostEntry("Коля", players, 4, "ngo", token, "box");
 
         [Test]
         public void ReportedHostBecomesVisible()

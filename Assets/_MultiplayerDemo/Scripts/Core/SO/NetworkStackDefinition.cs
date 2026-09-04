@@ -11,8 +11,13 @@ namespace Game.Core
         [SerializeField] private string stackId = "ngo";
         [SerializeField] private string managerScene = "Net_Ngo";
 
+        /// Подпись к полю ручного ввода: у LAN-стеков это адрес, у Fusion — имя сессии.
+        /// Лобби показывает текст как есть и про стеки по-прежнему ничего не знает.
+        [SerializeField] private string manualEntryHint = "Адрес хоста (ip:port)";
+
         public string DisplayName => displayName;
         public string StackId => stackId;
         public string ManagerScene => managerScene;
+        public string ManualEntryHint => manualEntryHint;
     }
 }

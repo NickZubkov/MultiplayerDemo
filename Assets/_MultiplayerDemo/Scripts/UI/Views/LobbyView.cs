@@ -26,8 +26,10 @@ namespace Game.UI
         private void Awake()
         {
             hostButton.onClick.AddListener(() => _hostRequested.OnNext(playerName.text));
+            /// Уровень пустой: маяка не было, и какой уровень у того хоста — неизвестно.
+            /// Презентер подставит отмеченный в лобби.
             joinManualButton.onClick.AddListener(() =>
-                _joinRequested.OnNext(new HostEntry("вручную", 0, 0, "manual", manualAddress.text)));
+                _joinRequested.OnNext(new HostEntry("вручную", 0, 0, "manual", manualAddress.text, null)));
         }
 
         private void OnDestroy()

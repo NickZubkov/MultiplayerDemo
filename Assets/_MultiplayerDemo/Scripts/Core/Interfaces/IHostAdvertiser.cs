@@ -4,6 +4,6 @@ namespace Game.Core
     /// поэтому интерфейс отдельный от IHostBrowser.
     public interface IHostAdvertiser
     {
-        public void Advertise(string hostName, int players, int maxPlayers);
+        public void Advertise(string hostName, int players, int maxPlayers, string arenaId);
     }
 }

@@ -10,14 +10,23 @@ namespace Game.App
     /// а кто и когда расставит по ним игроков и ящики — дело стека.
     public sealed class ArenaLoader : IArenaLoader
     {
-        private const string ArenaScene = "Arena";
+        /// Помним загруженную сцену, а не имя из настроек: выгружать нужно ровно ту,
+        /// которую грузили, даже если в лобби уже отметили другой уровень.
+        private string _loadedScene;
 
-        public async UniTask<ISpawnPointRegistry> LoadAsync(CancellationToken token)
+        public async UniTask<ISpawnPointRegistry> LoadAsync(ArenaDefinition arena, CancellationToken token)
         {
-            await SceneFlow.LoadAdditiveAsync(ArenaScene, token);
+            await SceneFlow.LoadAdditiveAsync(arena.SceneName, token);
+            _loadedScene = arena.SceneName;
             return Object.FindFirstObjectByType<ArenaScopeInstaller>();
         }
 
-        public UniTask UnloadAsync() => SceneFlow.UnloadAsync(ArenaScene);
+        public async UniTask UnloadAsync()
+        {
+            if (_loadedScene == null) return;
+
+            await SceneFlow.UnloadAsync(_loadedScene);
+            _loadedScene = null;
+        }
     }
 }

@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoScope
   parentReference:
-    TypeName: 
+    TypeName: Game.App.BootstrapScope
   autoRun: 1
   autoInjectGameObjects: []
   manager: {fileID: 691994777}

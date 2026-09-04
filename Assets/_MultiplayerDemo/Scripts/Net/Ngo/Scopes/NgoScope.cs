@@ -8,6 +8,16 @@ namespace Game.Net.Ngo
 {
     /// Всё, что знает про NGO, живёт здесь и умирает вместе со сценой:
     /// сессия, браузер хостов, фабрика объектов, презентер лобби.
+    ///
+    /// Родитель объявлен в инспекторе: parentReference = BootstrapScope. Сцену стека может
+    /// открыть сам редактор — так делает виртуальный игрок MPPM, если она осталась у него
+    /// в списке открытых, — и тогда scope поднимается до всякой загрузки потоком, остаётся
+    /// без IClock и видов и падает на первом же резолве.
+    ///
+    /// StackSelectPresenter при загрузке сцены всё равно накрывает её EnqueueParent, но до
+    /// него дело уже не доходит: в LifetimeScope.GetRuntimeParent() поле инспектора стоит
+    /// раньше очереди EnqueueParent. Он остаётся страховкой для сцен Mirror и Fusion —
+    /// на случай, если там забудут проставить parentReference.
     public sealed class NgoScope : LifetimeScope
     {
         [SerializeField] private NetworkManager manager;

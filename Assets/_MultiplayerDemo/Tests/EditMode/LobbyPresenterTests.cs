@@ -21,6 +21,7 @@ namespace Game.Core.Tests
 
             public bool Started;
             public string AdvertisedName;
+            public string AdvertisedArena;
 
             public Observable<IReadOnlyList<HostEntry>> Hosts => _hosts;
 
@@ -35,9 +36,10 @@ namespace Game.Core.Tests
 
             public void StopBrowsing() => Started = false;
 
-            public void Advertise(string hostName, int players, int maxPlayers)
+            public void Advertise(string hostName, int players, int maxPlayers, string arenaId)
             {
                 AdvertisedName = hostName;
+                AdvertisedArena = arenaId;
                 _log.Add("advertise");
             }
 
@@ -89,15 +91,17 @@ namespace Game.Core.Tests
 
             public int Loads;
             public int Unloads;
+            public ArenaDefinition LoadedArena;
 
             public FakeArena(List<string> log)
             {
                 _log = log;
             }
 
-            public UniTask<ISpawnPointRegistry> LoadAsync(CancellationToken token)
+            public UniTask<ISpawnPointRegistry> LoadAsync(ArenaDefinition arena, CancellationToken token)
             {
                 Loads++;
+                LoadedArena = arena;
                 _log.Add("arena");
                 return UniTask.FromResult<ISpawnPointRegistry>(null);
             }
@@ -162,10 +166,11 @@ namespace Game.Core.Tests
             public readonly FakeBrowser Browser;
             public readonly FakeSession Session;
             public readonly FakeSpawner Spawner;
-            public readonly FakeArena Arena;
+            public readonly FakeArena ArenaFlow;
             public readonly FakeHud Hud;
             public readonly FakeLobbyView View;
             public readonly DemoConfig Config;
+            public readonly ArenaDefinition Arena;
             public readonly LobbyPresenter Presenter;
 
             public Rig()
@@ -173,11 +178,13 @@ namespace Game.Core.Tests
                 Browser = new FakeBrowser(Log);
                 Session = new FakeSession(Log);
                 Spawner = new FakeSpawner(Log);
-                Arena = new FakeArena(Log);
+                ArenaFlow = new FakeArena(Log);
                 Hud = new FakeHud();
                 View = new FakeLobbyView();
                 Config = ScriptableObject.CreateInstance<DemoConfig>();
-                Presenter = new LobbyPresenter(Browser, Session, Spawner, Arena, Hud, View, Config);
+                Arena = ScriptableObject.CreateInstance<ArenaDefinition>();
+                Presenter = new LobbyPresenter(Browser, Session, Spawner, ArenaFlow, Hud, View, Config,
+                    new[] { Arena });
             }
         }
 
@@ -198,7 +205,7 @@ namespace Game.Core.Tests
             var rig = new Rig();
             rig.Presenter.Start();
 
-            rig.View.ClickJoin(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777"));
+            rig.View.ClickJoin(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777", "box"));
 
             Assert.AreEqual("192.168.0.5:7777", rig.Session.LastJoinToken);
         }
@@ -209,7 +216,7 @@ namespace Game.Core.Tests
             var rig = new Rig();
             rig.Presenter.Start();
 
-            rig.Browser.Emit(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777"));
+            rig.Browser.Emit(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777", "box"));
 
             Assert.AreEqual(1, rig.View.Shown.Count);
         }
@@ -249,18 +256,44 @@ namespace Game.Core.Tests
             Assert.IsTrue(rig.View.Visible);
         }
 
+        [Test]
+        public void HostAdvertisesSelectedArena()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+
+            rig.View.ClickHost("Коля");
+
+            Assert.AreEqual(rig.Arena, rig.ArenaFlow.LoadedArena);
+            Assert.AreEqual("box", rig.Browser.AdvertisedArena);
+        }
+
+        /// Уровень хоста может быть из чужой сборки — грузить нечего, и молчать нельзя.
+        [Test]
+        public void UnknownArenaOfHostIsRefusedWithMessage()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+
+            rig.View.ClickJoin(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777", "ghost"));
+
+            Assert.IsNull(rig.Session.LastJoinToken);
+            Assert.AreEqual("Хост играет на уровне, которого нет в этой сборке", rig.Hud.Last);
+            Assert.AreEqual(0, rig.ArenaFlow.Loads);
+        }
+
         /// Пункт 8 чек-листа: закрытый хост не оставляет клиента в пустой арене.
         [Test]
         public void FailureReturnsPlayerToLobby()
         {
             var rig = new Rig();
             rig.Presenter.Start();
-            rig.View.ClickJoin(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777"));
+            rig.View.ClickJoin(new HostEntry("Коля", 1, 4, "ngo", "192.168.0.5:7777", "box"));
 
             rig.Session.Fail("Хост недоступен или отключился");
 
             Assert.IsTrue(rig.Session.Left);
-            Assert.AreEqual(1, rig.Arena.Unloads);
+            Assert.AreEqual(1, rig.ArenaFlow.Unloads);
         }
     }
 }

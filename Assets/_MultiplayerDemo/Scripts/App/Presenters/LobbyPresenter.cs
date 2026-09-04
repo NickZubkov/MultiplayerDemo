@@ -18,6 +18,8 @@ namespace Game.App
 
         private const string UnknownFailure = "Не удалось подключиться";
 
+        private const string UnknownArena = "Хост играет на уровне, которого нет в этой сборке";
+
         private readonly IHostBrowser _browser;
         private readonly ISessionControl _session;
         private readonly IWorldSpawner _spawner;
@@ -25,11 +27,18 @@ namespace Game.App
         private readonly IHudMessages _hud;
         private readonly ILobbyView _view;
         private readonly DemoConfig _config;
+        private readonly ArenaDefinition[] _arenas;
 
         private DisposableBag _subscriptions;
 
+        /// Отмеченный уровень — состояние экрана, а не разделяемое состояние: он нужен
+        /// только хосту и только до старта. Колонка выбора появится в задаче 11.3,
+        /// пока это первый уровень каталога.
+        private ArenaDefinition _selectedArena;
+
         public LobbyPresenter(IHostBrowser browser, ISessionControl session, IWorldSpawner spawner,
-            IArenaLoader arena, IHudMessages hud, ILobbyView view, DemoConfig config)
+            IArenaLoader arena, IHudMessages hud, ILobbyView view, DemoConfig config,
+            ArenaDefinition[] arenas)
         {
             _browser = browser;
             _session = session;
@@ -38,6 +47,8 @@ namespace Game.App
             _hud = hud;
             _view = view;
             _config = config;
+            _arenas = arenas;
+            _selectedArena = arenas.Length > 0 ? arenas[0] : null;
         }
 
         public void Start()
@@ -88,7 +99,7 @@ namespace Game.App
         /// повторные нажатия игнорируются — в корутинной версии это был бы ручной флаг.
         private async UniTask HostAsync(string playerName, CancellationToken token)
         {
-            _spawner.UsePoints(await _arena.LoadAsync(token));
+            _spawner.UsePoints(await _arena.LoadAsync(_selectedArena, token));
             await _session.StartHostAsync(playerName, token);
             _spawner.SpawnItems();
 
@@ -96,16 +107,38 @@ namespace Game.App
             /// их сервис, и приведения просто не случится.
             if (_browser is IHostAdvertiser advertiser)
             {
-                advertiser.Advertise(playerName, 1, _config.MaxPlayers);
+                advertiser.Advertise(playerName, 1, _config.MaxPlayers, _selectedArena.ArenaId);
             }
         }
 
         /// Клиенту арена нужна не ради точек, а ради пола: игрока ему создаст сервер,
-        /// и приземлиться тот должен на уже загруженную сцену.
+        /// и приземлиться тот должен на уже загруженную сцену — и ровно на ту же, что у хоста.
         private async UniTask JoinAsync(HostEntry entry, CancellationToken token)
         {
-            await _arena.LoadAsync(token);
+            var arena = ArenaOf(entry);
+            if (arena == null)
+            {
+                _hud.Show(UnknownArena);
+                return;
+            }
+
+            await _arena.LoadAsync(arena, token);
             await _session.JoinAsync(entry, token);
+        }
+
+        /// Пустой ArenaId бывает только у записи, собранной из введённого вручную адреса:
+        /// маяка не было, спросить некого — идём на свой отмеченный уровень и надеемся,
+        /// что собеседник сделал так же (решение S10 в спеке потока сцен).
+        private ArenaDefinition ArenaOf(HostEntry entry)
+        {
+            if (string.IsNullOrEmpty(entry.ArenaId)) return _selectedArena;
+
+            foreach (var arena in _arenas)
+            {
+                if (arena.ArenaId == entry.ArenaId) return arena;
+            }
+
+            return null;
         }
 
         /// Панель лобби в сцене Bootstrap выключена и включается отсюда: в арене она

@@ -11,7 +11,7 @@ namespace Game.Core
     /// кто её загрузил, и незачем тащить Game.Gameplay в презентер и в тесты.
     public interface IArenaLoader
     {
-        public UniTask<ISpawnPointRegistry> LoadAsync(CancellationToken token);
+        public UniTask<ISpawnPointRegistry> LoadAsync(ArenaDefinition arena, CancellationToken token);
         public UniTask UnloadAsync();
     }
 }
