@@ -1,0 +1,23 @@
+{
+    "name": "Game.Net.Mirror",
+    "rootNamespace": "Game.Net.Mirror",
+    "references": [
+        "Game.Core",
+        "Game.Gameplay",
+        "Game.App",
+        "R3.Unity",
+        "UniTask",
+        "VContainer",
+        "Mirror",
+        "Mirror.Components"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

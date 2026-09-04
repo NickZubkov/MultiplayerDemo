@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_MultiplayerDemo/Scenes/Net_Ngo.unity
     guid: 40b92200f15410e42b61fbbec6c974ab
+  - enabled: 1
+    path: Assets/_MultiplayerDemo/Scenes/Net_Mirror.unity
+    guid: 90e0da27ec8139f488443cddce07ce28
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
