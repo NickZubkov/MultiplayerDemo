@@ -57,5 +57,18 @@ namespace Game.Net.Mirror
 
         public override void OnServerAddPlayer(NetworkConnectionToClient connection) =>
             _spawner.SpawnPlayer(connection);
+
+        /// Держатель уходит: предметы отпускаем до базы, потому что она уничтожит его
+        /// объект, и netId в SyncVar ящика станет не с чем сопоставить — ящик повис бы
+        /// занятым навсегда. Сами предметы Mirror не тронет: владение им не передаётся.
+        public override void OnServerDisconnect(NetworkConnectionToClient connection)
+        {
+            if (connection.identity != null)
+            {
+                MirrorItem.ReleaseAllHeldBy(connection.identity.netId);
+            }
+
+            base.OnServerDisconnect(connection);
+        }
     }
 }
