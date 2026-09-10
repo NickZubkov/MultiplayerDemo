@@ -44,6 +44,15 @@ namespace Game.UI
             /// Презентер подставит отмеченный в лобби.
             joinManualButton.onClick.AddListener(() =>
                 _joinRequested.OnNext(new HostEntry("вручную", 0, 0, "manual", manualAddress.text, null)));
+
+            /// Начальное состояние задаём кодом, а не галочками в сцене: панель верстают
+            /// включённой, шаблоны строк остаются как придётся, и любая забытая галочка
+            /// вылезла бы игроку лишней строкой или экраном поверх выбора стека. Лобби
+            /// покажет презентер, когда сцена стека загрузится.
+            hostEntryTemplate.gameObject.SetActive(false);
+            arenaEntryTemplate.gameObject.SetActive(false);
+            emptyListHint.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -54,9 +63,9 @@ namespace Game.UI
             _backToStacksRequested.Dispose();
         }
 
-        public void Show() => gameObject.SetActive(true);
+        public void Show() => SetVisible(true);
 
-        public void Hide() => gameObject.SetActive(false);
+        public void Hide() => SetVisible(false);
 
         /// В строке хоста стоит его уровень: клиент грузит именно тот, что выбрал хост,
         /// и должен видеть, куда идёт.
@@ -128,6 +137,17 @@ namespace Game.UI
             }
 
             return "чужой уровень";
+        }
+
+        /// Показывает и прячет этот экран презентер из сцены стека — он умирает вместе
+        /// с ней и гасит лобби за собой, в том числе при выходе из Play Mode, когда сам
+        /// вид Unity уже могла снести. Порядок разрушения между сценами не обещан никем,
+        /// поэтому вид обязан пережить обращение к себе после смерти.
+        private void SetVisible(bool visible)
+        {
+            if (this == null) return;
+
+            gameObject.SetActive(visible);
         }
 
         private readonly struct ArenaRow

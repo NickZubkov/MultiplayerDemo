@@ -454,6 +454,38 @@ namespace Game.Core.Tests
             Assert.IsTrue(rig.StackFlow.BackRequested);
         }
 
+        /// Экраны живут в scope сцены Bootstrap и переживают презентер: со сценой стека
+        /// уходит он один, а панель лобби осталась бы висеть поверх выбора стека —
+        /// перекрывая его кнопки и подставляя под клик свои.
+        [Test]
+        public void LobbyLeavesTheScreenWithItsPresenter()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            Assert.IsTrue(rig.View.Visible);
+
+            rig.Presenter.Dispose();
+
+            Assert.IsFalse(rig.View.Visible);
+        }
+
+        /// Из матча с открытой паузой тоже выходят — например, когда сессия отвалилась
+        /// и сцену стека выгружают из-под игрока.
+        [Test]
+        public void PauseLeavesTheScreenWithItsPresenter()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            rig.View.ClickHost("Коля");
+            rig.Pause.PressCancel();
+            Assert.IsTrue(rig.Pause.Visible);
+
+            rig.Presenter.Dispose();
+
+            Assert.IsFalse(rig.Pause.Visible);
+            Assert.IsFalse(rig.Pause.CursorCapturedOnHide);
+        }
+
         /// Пункт 8 чек-листа: закрытый хост не оставляет клиента в пустой арене.
         [Test]
         public void FailureReturnsPlayerToLobby()

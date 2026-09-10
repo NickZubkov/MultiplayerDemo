@@ -17,6 +17,22 @@ namespace Game.App
         [SerializeField] private NetworkStackDefinition[] stacks;
         [SerializeField] private ArenaDefinition[] arenas;
 
+        /// Виды будим до сборки графа. Панель, выключенную в сцене галочкой, Unity
+        /// обходит стороной: Awake у её компонентов не зовётся вовсе, и вид остаётся без
+        /// подписок — у паузы так пропадает и Cancel, то есть открыть её становится
+        /// нечем. Начальную видимость каждый вид ставит себе сам в своём Awake, поэтому
+        /// после пробуждения экран выглядит одинаково независимо от того, в каком
+        /// состоянии сцену сохранили после вёрстки.
+        protected override void Awake()
+        {
+            stackSelectView.gameObject.SetActive(true);
+            lobbyView.gameObject.SetActive(true);
+            hudView.gameObject.SetActive(true);
+            pauseView.gameObject.SetActive(true);
+
+            base.Awake();
+        }
+
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterComponent<IStackSelectView>(stackSelectView);
