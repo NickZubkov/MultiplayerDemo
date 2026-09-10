@@ -35,7 +35,8 @@ namespace Game.Net.Mirror
 
         public void Dispose() => _state.Dispose();
 
-        public UniTask StartHostAsync(string playerName, CancellationToken token)
+        /// Уровень здесь не нужен: его отдаст MirrorHostBrowser в ответе на поиск.
+        public UniTask StartHostAsync(string playerName, string arenaId, CancellationToken token)
         {
             _manager.StartHost();
 

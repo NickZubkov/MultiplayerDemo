@@ -134,11 +134,12 @@ namespace Game.App
         private async UniTask HostAsync(string playerName, CancellationToken token)
         {
             await _arena.LoadAsync(_selectedArena, token);
-            await _session.StartHostAsync(playerName, token);
+            await _session.StartHostAsync(playerName, _selectedArena.ArenaId, token);
             _spawner.SpawnItems();
 
-            /// В LAN о себе рассказывает сам браузер; у облачных стеков этим займётся
-            /// их сервис, и приведения просто не случится.
+            /// В LAN о себе рассказывает сам браузер; у облачных стеков этим занимается
+            /// сессия — уровень она объявила при создании комнаты, и приведения
+            /// просто не случится.
             if (_browser is IHostAdvertiser advertiser)
             {
                 advertiser.Advertise(playerName, 1, _config.MaxPlayers, _selectedArena.ArenaId);

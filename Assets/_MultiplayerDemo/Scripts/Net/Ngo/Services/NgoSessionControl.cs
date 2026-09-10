@@ -32,7 +32,8 @@ namespace Game.Net.Ngo
             _state.Dispose();
         }
 
-        public UniTask StartHostAsync(string playerName, CancellationToken token)
+        /// Уровень здесь не нужен: о нём расскажет маяк NgoHostBrowser уже после старта.
+        public UniTask StartHostAsync(string playerName, string arenaId, CancellationToken token)
         {
             _manager.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", Port, "0.0.0.0");
             _state.Value = _manager.StartHost()

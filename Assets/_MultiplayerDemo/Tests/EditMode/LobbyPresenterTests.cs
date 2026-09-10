@@ -52,6 +52,7 @@ namespace Game.Core.Tests
             private readonly List<string> _log;
 
             public string LastJoinToken;
+            public string HostedArena;
             public bool Left;
 
             public ReadOnlyReactiveProperty<SessionState> State => _state;
@@ -61,8 +62,9 @@ namespace Game.Core.Tests
                 _log = log;
             }
 
-            public UniTask StartHostAsync(string playerName, CancellationToken token)
+            public UniTask StartHostAsync(string playerName, string arenaId, CancellationToken token)
             {
+                HostedArena = arenaId;
                 _log.Add("host");
                 _state.Value = new SessionState(SessionPhase.Hosting);
                 return UniTask.CompletedTask;
@@ -334,6 +336,9 @@ namespace Game.Core.Tests
             Assert.IsTrue(rig.View.Visible);
         }
 
+        /// Уровень уходит обоими путями сразу, и это не дублирование: LAN-стеки объявят
+        /// его маяком после старта, а облачным он нужен в самом StartHostAsync — Photon
+        /// принимает свойства сессии только при создании комнаты.
         [Test]
         public void HostAdvertisesSelectedArena()
         {
@@ -344,6 +349,7 @@ namespace Game.Core.Tests
 
             Assert.AreEqual(rig.Arena, rig.ArenaFlow.LoadedArena);
             Assert.AreEqual("box", rig.Browser.AdvertisedArena);
+            Assert.AreEqual("box", rig.Session.HostedArena);
         }
 
         /// Уровень хоста может быть из чужой сборки — грузить нечего, и молчать нельзя.

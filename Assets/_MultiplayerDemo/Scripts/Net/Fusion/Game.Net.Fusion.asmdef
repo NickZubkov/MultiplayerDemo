@@ -1,0 +1,29 @@
+{
+    "name": "Game.Net.Fusion",
+    "rootNamespace": "Game.Net.Fusion",
+    "references": [
+        "Game.Core",
+        "Game.Gameplay",
+        "Game.App",
+        "R3.Unity",
+        "UniTask",
+        "VContainer",
+        "Fusion.Unity",
+        "Photon.Realtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "Unity",
+            "expression": "",
+            "define": "FUSION_FORCE_WEAVING"
+        }
+    ],
+    "noEngineReferences": false
+}
