@@ -107,7 +107,12 @@ namespace Game.Net.Fusion
         {
             if (!_browsing) return;
 
-            var result = await _runners.Ensure().JoinSessionLobby(SessionLobby.Shared, cancellationToken: _life.Token);
+            /// Настройки те же, что у старта сессии, и подложить сводку регионов надо
+            /// в оба места: в лобби браузер входит первым, и полный пинг случается там.
+            var result = await _runners.Ensure()
+                                       .JoinSessionLobby(SessionLobby.Shared,
+                                           customAppSettings: PhotonRegionSummary.WithStoredRegion(),
+                                           cancellationToken: _life.Token);
 
             /// Задача входа в лобби не завершается, пока раннер жив, — поэтому её ответ
             /// приходит ровно в момент разрушения, и без этой проверки продолжение

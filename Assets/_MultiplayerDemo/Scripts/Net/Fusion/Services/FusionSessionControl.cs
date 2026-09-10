@@ -101,6 +101,11 @@ namespace Game.Net.Fusion
                 /// останется без родителя. Fusion своего менеджера сцен не навязывает —
                 /// его добавляют примеры (FusionBootstrap.cs:653), а не сам StartGame.
                 StartGameCancellationToken = token,
+
+                /// Копия глобальных настроек с подложенной сводкой прошлого замера
+                /// регионов: без неё Photon пингует все регионы заново на каждом старте,
+                /// и это те самые несколько секунд недорисованной сцены.
+                CustomPhotonAppSettings = PhotonRegionSummary.WithStoredRegion(),
             }).AsUniTask();
 
             _state.Value = result.Ok
@@ -135,6 +140,10 @@ namespace Game.Net.Fusion
             var (average, last) = runner.GetRttToPhotonCloud();
             UnityEngine.Debug.Log($"Fusion: регион {runner.SessionInfo.Region}, RTT до облака "
                 + $"{average * 1000:F0} мс в среднем, {last * 1000:F0} мс последний");
+
+            /// Тот же момент годится и чтобы запомнить регион: замер к нему заведомо
+            /// закончен, а следующему запуску это сэкономит полный пинг всех регионов.
+            PhotonRegionSummary.Remember();
         }
 
         /// Успех у Fusion один на оба намерения — StartGame вернулся, значит мы в сессии, —

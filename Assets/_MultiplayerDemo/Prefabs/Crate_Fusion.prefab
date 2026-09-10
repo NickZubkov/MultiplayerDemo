@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5272032206444132188, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 502198457773604482}
+    - targetCorrespondingSourceObject: {fileID: 5272032206444132188, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 412047974078374584}
   m_SourcePrefab: {fileID: 100100000, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
 --- !u!1 &3170864542263487216 stripped
 GameObject:
@@ -83,10 +86,11 @@ MonoBehaviour:
   SortKey: 4057213646
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 524546
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 502198457773604482}
+  - {fileID: 412047974078374584}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &502198457773604482
 MonoBehaviour:
@@ -128,3 +132,15 @@ MonoBehaviour:
     MinImpactfulCollisionAlignment: 0.3
     ImpactStartCorrectionTime: 0.1
     ImpactCorrectionTimeComplete: 0.3
+--- !u!114 &412047974078374584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3170864542263487216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f3f97168e1da44ea4110b2bb2b5c0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Net.Fusion::Game.Net.Fusion.FusionItem

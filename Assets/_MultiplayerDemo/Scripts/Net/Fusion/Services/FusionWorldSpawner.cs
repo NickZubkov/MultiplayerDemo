@@ -43,7 +43,12 @@ namespace Game.Net.Fusion
             if (player != runner.LocalPlayer) return;
 
             var point = PointFor(player);
-            runner.Spawn(_playerPrefab, point.Position, point.Rotation, player);
+            var avatar = runner.Spawn(_playerPrefab, point.Position, point.Rotation, player);
+
+            /// Связь «игрок → его аватар» объявляем сразу после спавна: по ней предмет
+            /// находит руку держателя, и знать её должны все, а не только мы. Объявить
+            /// её может только владелец объекта, а раздаёт её всем уже сам Fusion.
+            runner.SetPlayerObject(player, avatar);
         }
 
         /// Точку выбираем по номеру игрока, а не по собственному счётчику, как в двух других
