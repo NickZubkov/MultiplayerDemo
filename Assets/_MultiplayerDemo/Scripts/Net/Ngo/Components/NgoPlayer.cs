@@ -14,8 +14,8 @@ namespace Game.Net.Ngo
     [RequireComponent(typeof(PlayerRig))]
     public sealed class NgoPlayer : NetworkBehaviour
     {
-        [SerializeField] private InteractionRay ray;
-        [SerializeField] private HoldPoint holdPoint;
+        [SerializeField] private InteractionRay _ray;
+        [SerializeField] private HoldPoint _holdPoint;
 
         private PlayerRig _rig;
         private DemoConfig _config;
@@ -27,10 +27,10 @@ namespace Game.Net.Ngo
         /// Точка крепления в системе координат самого игрока: предмет цепляется
         /// к корню, потому что родителем в NGO может быть только объект с NetworkObject.
         public Vector3 HoldLocalPosition =>
-            holdPoint == null ? Vector3.zero : transform.InverseTransformPoint(holdPoint.transform.position);
+            _holdPoint == null ? Vector3.zero : transform.InverseTransformPoint(_holdPoint.transform.position);
 
         public Quaternion HoldLocalRotation =>
-            holdPoint == null ? Quaternion.identity : Quaternion.Inverse(transform.rotation) * holdPoint.transform.rotation;
+            _holdPoint == null ? Quaternion.identity : Quaternion.Inverse(transform.rotation) * _holdPoint.transform.rotation;
 
         [Inject]
         public void Construct(DemoConfig config) => _config = config;
@@ -41,11 +41,11 @@ namespace Game.Net.Ngo
         {
             _rig.SetLocal(IsOwner);
 
-            if (!IsOwner || ray == null) return;
+            if (!IsOwner || _ray == null) return;
 
             _subscriptions = Disposable.Combine(
-                ray.PickRequested.Subscribe(OnPickRequested),
-                ray.DropRequested.Subscribe(_ => OnDropRequested()));
+                _ray.PickRequested.Subscribe(OnPickRequested),
+                _ray.DropRequested.Subscribe(_ => OnDropRequested()));
         }
 
         public override void OnNetworkDespawn() => _subscriptions?.Dispose();
@@ -55,9 +55,9 @@ namespace Game.Net.Ngo
         {
             _held = item;
 
-            if (ray != null)
+            if (_ray != null)
             {
-                ray.HandsBusy = item != null;
+                _ray.HandsBusy = item != null;
             }
         }
 
@@ -74,7 +74,7 @@ namespace Game.Net.Ngo
         {
             if (_held == null) return;
 
-            _held.RequestDropRpc(ray.View.forward * _config.ThrowImpulse);
+            _held.RequestDropRpc(_ray.View.forward * _config.ThrowImpulse);
         }
     }
 }

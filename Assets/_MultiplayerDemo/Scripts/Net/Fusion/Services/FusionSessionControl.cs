@@ -19,7 +19,7 @@ namespace Game.Net.Fusion
     {
         /// Схему свойств сессии задаёт тот, кто создаёт комнату, поэтому ключ живёт здесь,
         /// а FusionHostBrowser читает список по этой же константе.
-        public const string ArenaKey = "arena";
+        public const string ARENA_KEY = "arena";
 
         private readonly FusionRunnerFactory _runners;
         private readonly DemoConfig _config;
@@ -163,7 +163,7 @@ namespace Game.Net.Fusion
 
             return new Dictionary<string, SessionProperty>
             {
-                [ArenaKey] = arenaId,
+                [ARENA_KEY] = arenaId,
             };
         }
 

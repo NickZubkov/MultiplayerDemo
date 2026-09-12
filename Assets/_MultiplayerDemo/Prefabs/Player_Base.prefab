@@ -285,10 +285,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49fda9b8f1f0b284a84e949308951043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.PlayerRig
-  ownerOnlyBehaviours:
+  _ownerOnlyBehaviours:
   - {fileID: 316046762807152528}
   - {fileID: 7885550664819544973}
-  ownerOnlyObjects:
+  _ownerOnlyObjects:
   - {fileID: 1006521059273740606}
 --- !u!114 &5569206681219037454
 MonoBehaviour:
@@ -302,11 +302,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f35bf2cf773e2744b3c22e9dd3e9bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.InteractionRay
-  view: {fileID: 3980683979277054661}
-  interactable:
+  _view: {fileID: 3980683979277054661}
+  _interactable:
     serializedVersion: 2
     m_Bits: 256
-  interactAction: {fileID: -5548793354506133487, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _interactAction: {fileID: -5548793354506133487, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &497830435067736571
 GameObject:
   m_ObjectHideFlags: 0

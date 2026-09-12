@@ -10,9 +10,9 @@ namespace Game.Gameplay
     [RequireComponent(typeof(PlayerRig))]
     public sealed class InteractionRay : MonoBehaviour
     {
-        [SerializeField] private Camera view;
-        [SerializeField] private LayerMask interactable;
-        [SerializeField] private InputActionReference interactAction;
+        [SerializeField] private Camera _view;
+        [SerializeField] private LayerMask _interactable;
+        [SerializeField] private InputActionReference _interactAction;
 
         private readonly Subject<Collider> _pickRequested = new();
         private readonly Subject<Unit> _dropRequested = new();
@@ -25,13 +25,13 @@ namespace Game.Gameplay
         /// Ставится адаптером при смене держателя.
         public bool HandsBusy { get; set; }
 
-        public Transform View => view.transform;
+        public Transform View => _view.transform;
 
         private void Awake() => _rig = GetComponent<PlayerRig>();
 
-        private void OnEnable() => interactAction.action.performed += OnInteractPerformed;
+        private void OnEnable() => _interactAction.action.performed += OnInteractPerformed;
 
-        private void OnDisable() => interactAction.action.performed -= OnInteractPerformed;
+        private void OnDisable() => _interactAction.action.performed -= OnInteractPerformed;
 
         private void OnDestroy()
         {
@@ -53,9 +53,9 @@ namespace Game.Gameplay
                 return;
             }
 
-            var ray = new Ray(view.transform.position, view.transform.forward);
+            var ray = new Ray(_view.transform.position, _view.transform.forward);
 
-            if (Physics.Raycast(ray, out var hit, PickupRules.MaxDistance, interactable))
+            if (Physics.Raycast(ray, out var hit, PickupRules.MAX_DISTANCE, _interactable))
             {
                 _pickRequested.OnNext(hit.collider);
             }

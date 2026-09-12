@@ -39,7 +39,7 @@ namespace Game.Core.Tests
         {
             var registry = new HostRegistry();
             registry.Report(Host("192.168.0.2:7777"), 0);
-            Assert.AreEqual(0, registry.GetAlive(HostRegistry.Ttl + 0.01).Count);
+            Assert.AreEqual(0, registry.GetAlive(HostRegistry.TTL + 0.01).Count);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Game.Core.Tests
         {
             var registry = new HostRegistry();
             registry.Report(Host("192.168.0.2:7777"), 0);
-            Assert.AreEqual(1, registry.GetAlive(HostRegistry.Ttl - 0.01).Count);
+            Assert.AreEqual(1, registry.GetAlive(HostRegistry.TTL - 0.01).Count);
         }
 
         [Test]

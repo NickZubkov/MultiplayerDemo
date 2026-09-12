@@ -9,12 +9,12 @@ namespace Game.Core
     /// не займёт порт — то есть ровно наш сценарий «два окна на одной машине».
     public sealed class LanBeaconSocket : IDisposable
     {
-        public const int DefaultPort = 47777;
+        public const int DEFAULT_PORT = 47777;
 
         private readonly UdpClient _socket;
         private readonly IPEndPoint _broadcast;
 
-        public LanBeaconSocket(int port = DefaultPort)
+        public LanBeaconSocket(int port = DEFAULT_PORT)
         {
             _socket = new UdpClient();
             _socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);

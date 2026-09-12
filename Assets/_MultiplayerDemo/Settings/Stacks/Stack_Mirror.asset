@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e3a0caf3459034c800777c3c85a826, type: 3}
   m_Name: Stack_Mirror
   m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorStackDefinition
-  displayName: Mirror
-  stackId: mirror
-  managerScene: Net_Mirror
-  manualEntryHint: "\u0410\u0434\u0440\u0435\u0441 \u0445\u043E\u0441\u0442\u0430
+  _displayName: Mirror
+  _stackId: mirror
+  _managerScene: Net_Mirror
+  _manualEntryHint: "\u0410\u0434\u0440\u0435\u0441 \u0445\u043E\u0441\u0442\u0430
     (ip:port)"

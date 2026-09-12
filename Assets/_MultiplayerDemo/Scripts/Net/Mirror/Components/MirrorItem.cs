@@ -32,7 +32,7 @@ namespace Game.Net.Mirror
     public sealed class MirrorItem : NetworkBehaviour
     {
         /// Предмет свободен. netId заспавненного объекта нулём не бывает.
-        private const uint NoHolder = 0;
+        private const uint NO_HOLDER = 0;
 
         /// Автомат живёт только на сервере: переходы разрешает он, остальные видят результат.
         private readonly ItemState _state = new();
@@ -63,7 +63,7 @@ namespace Game.Net.Mirror
         /// объект игрока: после этого netId держателя уже не с чем сопоставить.
         public static void ReleaseAllHeldBy(uint holder)
         {
-            if (holder == NoHolder) return;
+            if (holder == NO_HOLDER) return;
 
             foreach (var identity in NetworkServer.spawned.Values)
             {
@@ -78,7 +78,7 @@ namespace Game.Net.Mirror
         public void CmdRequestPick(NetworkConnectionToClient sender = null)
         {
             var player = PlayerOf(sender);
-            var requester = sender?.identity == null ? NoHolder : sender.identity.netId;
+            var requester = sender?.identity == null ? NO_HOLDER : sender.identity.netId;
 
             var query = new PickupQuery(
                 itemFree: _state.Phase == ItemPhase.Free,
@@ -88,7 +88,7 @@ namespace Game.Net.Mirror
 
             var denial = PickupRules.Evaluate(query);
 
-            if (denial == PickupDenial.None && requester != NoHolder && _state.TryHold(requester))
+            if (denial == PickupDenial.None && requester != NO_HOLDER && _state.TryHold(requester))
             {
                 _holder = requester;
                 return;
@@ -109,7 +109,7 @@ namespace Game.Net.Mirror
             /// делает это при NetworkServer.activeHost), то есть к следующей строке тело уже
             /// не кинематическое и импульс дойдёт. Сервер у нас всегда хост — выделенного
             /// в демке нет, и второй ветки под него мы не заводим.
-            _holder = NoHolder;
+            _holder = NO_HOLDER;
             _body.AddForce(impulse, ForceMode.Impulse);
         }
 
@@ -122,7 +122,7 @@ namespace Game.Net.Mirror
             if (_holder != holder) return;
 
             _state.TryRelease(holder);
-            _holder = NoHolder;
+            _holder = NO_HOLDER;
         }
 
         private void OnHolderChanged(uint previous, uint current)
@@ -142,7 +142,7 @@ namespace Game.Net.Mirror
 
         private void Apply(uint holder)
         {
-            var held = holder != NoHolder;
+            var held = holder != NO_HOLDER;
 
             /// Кинематику ставим до смены родителя: иначе физический шаг успевает
             /// подхватить предмет уже в руке и утащить его вниз.
@@ -172,7 +172,7 @@ namespace Game.Net.Mirror
         /// у хоста это один и тот же объект в обоих словарях.
         private static MirrorPlayer PlayerOf(uint netId)
         {
-            if (netId == NoHolder) return null;
+            if (netId == NO_HOLDER) return null;
 
             if (NetworkClient.active && NetworkClient.spawned.TryGetValue(netId, out var onClient) && onClient != null)
             {

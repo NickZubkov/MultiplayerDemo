@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e35e0ffdb73d324b88eacca312808b4, type: 3}
   m_Name: Stack_Ngo
   m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoStackDefinition
-  displayName: NGO
-  stackId: ngo
-  managerScene: Net_Ngo
-  manualEntryHint: "\u0410\u0434\u0440\u0435\u0441 \u0445\u043E\u0441\u0442\u0430
+  _displayName: NGO
+  _stackId: ngo
+  _managerScene: Net_Ngo
+  _manualEntryHint: "\u0410\u0434\u0440\u0435\u0441 \u0445\u043E\u0441\u0442\u0430
     (ip:port)"

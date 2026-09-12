@@ -18,9 +18,9 @@ namespace Game.Net.Ngo
     public sealed class NgoItem : NetworkBehaviour
     {
         /// Предмет свободен. Идентификатором клиента ulong.MaxValue не бывает.
-        private const ulong NoHolder = ulong.MaxValue;
+        private const ulong NO_HOLDER = ulong.MaxValue;
 
-        private readonly NetworkVariable<ulong> _holder = new(NoHolder);
+        private readonly NetworkVariable<ulong> _holder = new(NO_HOLDER);
 
         /// Автомат живёт только на сервере: переходы разрешает он, остальные видят результат.
         private readonly ItemState _state = new();
@@ -45,7 +45,7 @@ namespace Game.Net.Ngo
             }
 
             /// Опоздавший клиент получает предмет уже занятым — состояние применяем сразу.
-            OnHolderChanged(NoHolder, _holder.Value);
+            OnHolderChanged(NO_HOLDER, _holder.Value);
         }
 
         public override void OnNetworkDespawn()
@@ -98,7 +98,7 @@ namespace Game.Net.Ngo
             if (!_state.TryRelease(requester)) return;
 
             NetworkObject.RemoveOwnership();
-            _holder.Value = NoHolder;
+            _holder.Value = NO_HOLDER;
             _body.AddForce(impulse, ForceMode.Impulse);
         }
 
@@ -113,7 +113,7 @@ namespace Game.Net.Ngo
             if (_holder.Value != clientId) return;
 
             _state.TryRelease(clientId);
-            _holder.Value = NoHolder;
+            _holder.Value = NO_HOLDER;
         }
 
         private void OnHolderChanged(ulong previous, ulong current)
@@ -134,7 +134,7 @@ namespace Game.Net.Ngo
         /// а их собственный вызов TrySetParent всё равно вернул бы false.
         private void ApplyAttachment(ulong holder)
         {
-            if (holder == NoHolder)
+            if (holder == NO_HOLDER)
             {
                 if (transform.parent != null)
                 {
@@ -156,7 +156,7 @@ namespace Game.Net.Ngo
         /// остальные повторяют за ним. В руке предмет ведёт иерархия, и кинематика нужна всем.
         private void ApplyPhysicsState()
         {
-            var held = _holder.Value != NoHolder;
+            var held = _holder.Value != NO_HOLDER;
 
             _body.isKinematic = held || !IsOwner;
 
@@ -193,7 +193,7 @@ namespace Game.Net.Ngo
         /// на сервере, либо у себя.
         private NgoPlayer FindPlayer(ulong clientId)
         {
-            if (clientId == NoHolder) return null;
+            if (clientId == NO_HOLDER) return null;
             if (!IsServer && clientId != NetworkManager.LocalClientId) return null;
 
             var player = NetworkManager.SpawnManager.GetPlayerNetworkObject(clientId);

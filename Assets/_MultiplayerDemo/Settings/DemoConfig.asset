@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d92b42944b8d141bb70d0a9c0aec41, type: 3}
   m_Name: DemoConfig
   m_EditorClassIdentifier: Game.Core::Game.Core.DemoConfig
-  maxPlayerSpeed: 6
-  speedTolerance: 1.5
-  throwImpulse: 25
-  maxPlayers: 4
+  _maxPlayerSpeed: 6
+  _speedTolerance: 1.5
+  _throwImpulse: 25
+  _maxPlayers: 4

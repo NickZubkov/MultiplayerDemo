@@ -5,14 +5,14 @@ namespace Game.Core
     [CreateAssetMenu(menuName = "Демка/Конфиг", fileName = "DemoConfig")]
     public sealed class DemoConfig : ScriptableObject
     {
-        [SerializeField] private float maxPlayerSpeed = 5.5f;
-        [SerializeField] private float speedTolerance = SpeedGuard.DefaultTolerance;
-        [SerializeField] private float throwImpulse = 5f;
-        [SerializeField] private int maxPlayers = 4;
+        [SerializeField] private float _maxPlayerSpeed = 5.5f;
+        [SerializeField] private float _speedTolerance = SpeedGuard.DEFAULT_TOLERANCE;
+        [SerializeField] private float _throwImpulse = 5f;
+        [SerializeField] private int _maxPlayers = 4;
 
-        public float MaxPlayerSpeed => maxPlayerSpeed;
-        public float SpeedTolerance => speedTolerance;
-        public float ThrowImpulse => throwImpulse;
-        public int MaxPlayers => maxPlayers;
+        public float MaxPlayerSpeed => _maxPlayerSpeed;
+        public float SpeedTolerance => _speedTolerance;
+        public float ThrowImpulse => _throwImpulse;
+        public int MaxPlayers => _maxPlayers;
     }
 }

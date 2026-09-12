@@ -8,8 +8,8 @@ namespace Game.UI
 {
     public sealed class PauseView : MonoBehaviour, IPauseView
     {
-        [SerializeField] private Button resumeButton;
-        [SerializeField] private Button exitButton;
+        [SerializeField] private Button _resumeButton;
+        [SerializeField] private Button _exitButton;
 
         private readonly Subject<Unit> _toggle = new();
         private readonly Subject<Unit> _resume = new();
@@ -23,8 +23,8 @@ namespace Game.UI
 
         private void Awake()
         {
-            resumeButton.onClick.AddListener(() => _resume.OnNext(Unit.Default));
-            exitButton.onClick.AddListener(() => _exit.OnNext(Unit.Default));
+            _resumeButton.onClick.AddListener(() => _resume.OnNext(Unit.Default));
+            _exitButton.onClick.AddListener(() => _exit.OnNext(Unit.Default));
 
             /// Действие берём из project-wide actions, а не заводим своё: в схеме UI уже
             /// есть Cancel — Esc на клавиатуре и B на геймпаде.

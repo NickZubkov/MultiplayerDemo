@@ -17,9 +17,9 @@ namespace Game.Net.Mirror
     /// Поэтому события приходят сюда от MirrorNetworkManager вызовами Report*.
     public sealed class MirrorSessionControl : ISessionControl, IDisposable
     {
-        public const ushort Port = 7778;
+        public const ushort PORT = 7778;
 
-        private const string LostReason = "Хост недоступен или отключился";
+        private const string LOST_REASON = "Хост недоступен или отключился";
 
         private readonly NetworkManager _manager;
         private readonly ReactiveProperty<SessionState> _state = new(new SessionState(SessionPhase.Idle));
@@ -133,7 +133,7 @@ namespace Game.Net.Mirror
             try
             {
                 _state.Value = new SessionState(SessionPhase.Failed,
-                    string.IsNullOrEmpty(reason) ? LostReason : reason);
+                    string.IsNullOrEmpty(reason) ? LOST_REASON : reason);
             }
             finally
             {

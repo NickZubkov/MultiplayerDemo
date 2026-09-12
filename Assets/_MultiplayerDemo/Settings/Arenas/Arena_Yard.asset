@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5dc7de3481037a4f94716f06dfb4893, type: 3}
   m_Name: Arena_Yard
   m_EditorClassIdentifier: Game.Core::Game.Core.ArenaDefinition
-  displayName: "\u0414\u0432\u043E\u0440"
-  arenaId: yard
-  sceneName: Arena_Yard
+  _displayName: "\u0414\u0432\u043E\u0440"
+  _arenaId: yard
+  _sceneName: Arena_Yard

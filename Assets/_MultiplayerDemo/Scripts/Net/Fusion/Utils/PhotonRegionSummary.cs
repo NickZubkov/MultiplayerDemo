@@ -14,14 +14,14 @@ namespace Game.Net.Fusion
     /// одного запуска и до следующего не доживает.
     public static class PhotonRegionSummary
     {
-        private const string Key = "fusion.best-region-summary";
+        private const string KEY = "fusion.best-region-summary";
 
         /// Настройки строим копией глобальных: в них AppId, протокол и адреса, а собранные
         /// с нуля потеряли бы всё это молча — и подключение ушло бы в никуда.
         public static FusionAppSettings WithStoredRegion()
         {
             var settings = PhotonAppSettings.Global.AppSettings.GetCopy();
-            var stored = PlayerPrefs.GetString(Key, string.Empty);
+            var stored = PlayerPrefs.GetString(KEY, string.Empty);
 
             settings.BestRegionSummaryFromStorage = string.IsNullOrEmpty(stored) ? null : stored;
             return settings;
@@ -37,7 +37,7 @@ namespace Game.Net.Fusion
 
             if (string.IsNullOrEmpty(summary)) return;
 
-            PlayerPrefs.SetString(Key, summary);
+            PlayerPrefs.SetString(KEY, summary);
             PlayerPrefs.Save();
         }
     }

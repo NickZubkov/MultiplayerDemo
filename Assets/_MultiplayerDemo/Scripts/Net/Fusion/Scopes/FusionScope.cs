@@ -17,29 +17,29 @@ namespace Game.Net.Fusion
     /// без IClock и видов и падает на первом же резолве.
     public sealed class FusionScope : LifetimeScope
     {
-        [SerializeField] private FusionStackDefinition stack;
-        [SerializeField] private GameObject runnerPrefab;
-        [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private GameObject cratePrefab;
+        [SerializeField] private FusionStackDefinition _stack;
+        [SerializeField] private GameObject _runnerPrefab;
+        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private GameObject _cratePrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
             /// Своё описание стека scope отдаёт как базовый тип: презентеру лобби нужна
             /// подпись поля ручного ввода, а знать про Fusion он не должен.
-            builder.RegisterInstance<NetworkStackDefinition>(stack);
+            builder.RegisterInstance<NetworkStackDefinition>(_stack);
 
             /// Lifetime.Singleton, а не Scoped, у всего в scope стека: Scoped VContainer
             /// пересоздаёт в том контейнере, где резолвят, и ArenaScope получил бы
             /// собственную копию IWorldSpawner — точки ушли бы в неё, а ящики не появились
             /// бы вовсе (решение S13 в спеке потока сцен).
             builder.Register<ArenaLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register(container => new FusionRunnerFactory(container, runnerPrefab), Lifetime.Singleton)
+            builder.Register(container => new FusionRunnerFactory(container, _runnerPrefab), Lifetime.Singleton)
                    .AsImplementedInterfaces()
                    .AsSelf();
             builder.Register<FusionSessionControl>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FusionHostBrowser>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register(container => new FusionWorldSpawner(container.Resolve<FusionRunnerFactory>(),
-                       playerPrefab, cratePrefab), Lifetime.Singleton)
+                       _playerPrefab, _cratePrefab), Lifetime.Singleton)
                    .AsImplementedInterfaces()
                    .AsSelf();
             builder.Register<FusionRunnerCallbacks>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

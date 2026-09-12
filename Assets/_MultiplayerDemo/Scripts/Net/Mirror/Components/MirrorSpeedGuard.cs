@@ -18,7 +18,7 @@ namespace Game.Net.Mirror
         /// Пауза после возврата. Поправка доедет до клиента и вернётся обратно только
         /// через RTT, а до тех пор сервер видит всё ту же старую позицию и отклонял бы
         /// её заново каждый физический шаг — вместо одного возврата вышла бы очередь.
-        private const double CorrectionGrace = 0.5;
+        private const double CORRECTION_GRACE = 0.5;
 
         private CharacterController _controller;
         private DemoConfig _config;
@@ -65,7 +65,7 @@ namespace Game.Net.Mirror
 
             TargetTeleport(connectionToClient, _lastAccepted);
             _hud.Show("Подозрительное перемещение отклонено");
-            _resumeAt = now + CorrectionGrace;
+            _resumeAt = now + CORRECTION_GRACE;
         }
 
         /// Возврат делает сам владелец: трансформ у него авторитетный (syncDirection

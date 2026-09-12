@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 3180059342
+  _assetId: 3404508140
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -151,8 +151,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  ray: {fileID: 2865145784945718998}
-  holdPoint: {fileID: 8709615766184242333}
+  _ray: {fileID: 2865145784945718998}
+  _holdPoint: {fileID: 8709615766184242333}
 --- !u!114 &3921991308938775051
 MonoBehaviour:
   m_ObjectHideFlags: 0

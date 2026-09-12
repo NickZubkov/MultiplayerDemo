@@ -97,14 +97,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1129161906
+  GlobalObjectIdHash: 1898525071
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 1
+  m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -171,8 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoPlayer
   ShowTopMostFoldoutHeaderGroup: 1
-  ray: {fileID: 8209920942533110600}
-  holdPoint: {fileID: 3382959874103177475}
+  _ray: {fileID: 8209920942533110600}
+  _holdPoint: {fileID: 3382959874103177475}
 --- !u!114 &7829973711017236101
 MonoBehaviour:
   m_ObjectHideFlags: 0

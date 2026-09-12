@@ -14,11 +14,11 @@ namespace Game.App
     {
         /// Широковещание режется брандмауэром и не ходит между сегментами сети, поэтому
         /// пустой список сам по себе ни о чём не говорит — подсказка уводит к ручному вводу.
-        private const string EmptyHint = "Хостов не видно. Проверьте, что оба в одной сети, или введите адрес вручную.";
+        private const string EMPTY_HINT = "Хостов не видно. Проверьте, что оба в одной сети, или введите адрес вручную.";
 
-        private const string UnknownFailure = "Не удалось подключиться";
+        private const string UNKNOWN_FAILURE = "Не удалось подключиться";
 
-        private const string UnknownArena = "Хост играет на уровне, которого нет в этой сборке";
+        private const string UNKNOWN_ARENA = "Хост играет на уровне, которого нет в этой сборке";
 
         private readonly IHostBrowser _browser;
         private readonly ISessionControl _session;
@@ -63,7 +63,7 @@ namespace Game.App
 
         public void Start()
         {
-            _view.SetEmptyHint(EmptyHint);
+            _view.SetEmptyHint(EMPTY_HINT);
             _view.SetManualHint(_stack.ManualEntryHint);
             _view.ShowArenas(_arenas);
             _view.MarkArena(_selectedArena);
@@ -165,7 +165,7 @@ namespace Game.App
             var arena = ArenaOf(entry);
             if (arena == null)
             {
-                _hud.Show(UnknownArena);
+                _hud.Show(UNKNOWN_ARENA);
                 return;
             }
 
@@ -252,7 +252,7 @@ namespace Game.App
         /// Причина отказа уходит в HUD до выгрузки — сообщение переживает смену сцены.
         private async UniTask FailAsync(SessionState state)
         {
-            _hud.Show(string.IsNullOrEmpty(state.Reason) ? UnknownFailure : state.Reason);
+            _hud.Show(string.IsNullOrEmpty(state.Reason) ? UNKNOWN_FAILURE : state.Reason);
             ClosePause(false);
             await LeaveAsync();
         }

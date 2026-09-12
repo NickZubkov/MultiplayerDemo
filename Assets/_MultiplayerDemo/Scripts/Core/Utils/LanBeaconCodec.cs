@@ -9,15 +9,15 @@ namespace Game.Core
     /// отвергаться решением, а не случайно — по числу полей.
     public static class LanBeaconCodec
     {
-        public const string Magic = "MPDEMO2";
+        public const string MAGIC = "MPDEMO2";
 
-        private const char Separator = '|';
+        private const char SEPARATOR = '|';
 
         public static string Encode(HostEntry entry)
         {
-            var name = entry.Name.Replace(Separator, ' ');
-            return string.Join(Separator.ToString(),
-                Magic, name,
+            var name = entry.Name.Replace(SEPARATOR, ' ');
+            return string.Join(SEPARATOR.ToString(),
+                MAGIC, name,
                 entry.Players.ToString(CultureInfo.InvariantCulture),
                 entry.MaxPlayers.ToString(CultureInfo.InvariantCulture),
                 entry.StackId, entry.JoinToken, entry.ArenaId);
@@ -28,8 +28,8 @@ namespace Game.Core
             entry = null;
             if (string.IsNullOrEmpty(raw)) return false;
 
-            var parts = raw.Split(Separator);
-            if (parts.Length != 7 || parts[0] != Magic) return false;
+            var parts = raw.Split(SEPARATOR);
+            if (parts.Length != 7 || parts[0] != MAGIC) return false;
             if (!int.TryParse(parts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out var players)) return false;
             if (!int.TryParse(parts[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out var maxPlayers)) return false;
 

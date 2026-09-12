@@ -1009,7 +1009,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  config: {fileID: 11400000, guid: fbe616ad3e909084983cca06827abe29, type: 2}
+  _config: {fileID: 11400000, guid: fbe616ad3e909084983cca06827abe29, type: 2}
 --- !u!4 &347901164
 Transform:
   m_ObjectHideFlags: 0
@@ -1256,17 +1256,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e056b5f859ce942a4a62d02b83209d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.UI::Game.UI.LobbyView
-  playerName: {fileID: 427090393}
-  manualAddress: {fileID: 1359813738}
-  hostButton: {fileID: 1552120069}
-  joinManualButton: {fileID: 298076515}
-  backToStacksButton: {fileID: 499297201}
-  hostEntryTemplate: {fileID: 249791068}
-  hostListRoot: {fileID: 1965106863}
-  arenaEntryTemplate: {fileID: 2128934891}
-  arenaListRoot: {fileID: 326772804}
-  emptyListHint: {fileID: 1903386900}
-  manualHint: {fileID: 1851443072}
+  _playerName: {fileID: 427090393}
+  _manualAddress: {fileID: 1359813738}
+  _hostButton: {fileID: 1552120069}
+  _joinManualButton: {fileID: 298076515}
+  _backToStacksButton: {fileID: 499297201}
+  _hostEntryTemplate: {fileID: 249791068}
+  _hostListRoot: {fileID: 1965106863}
+  _arenaEntryTemplate: {fileID: 2128934891}
+  _arenaListRoot: {fileID: 326772804}
+  _emptyListHint: {fileID: 1903386900}
+  _manualHint: {fileID: 1851443072}
 --- !u!1 &499297199
 GameObject:
   m_ObjectHideFlags: 0
@@ -1830,8 +1830,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f832683c5bc0cd6408757a5b8c5945bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.UI::Game.UI.PauseView
-  resumeButton: {fileID: 1394288732}
-  exitButton: {fileID: 58390871}
+  _resumeButton: {fileID: 1394288732}
+  _exitButton: {fileID: 58390871}
 --- !u!224 &969835598
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2046,15 +2046,15 @@ MonoBehaviour:
     TypeName: Game.App.ProjectScope
   autoRun: 1
   autoInjectGameObjects: []
-  stackSelectView: {fileID: 1488125603}
-  lobbyView: {fileID: 486941644}
-  hudView: {fileID: 1759706478}
-  pauseView: {fileID: 969835597}
-  stacks:
+  _stackSelectView: {fileID: 1488125603}
+  _lobbyView: {fileID: 486941644}
+  _hudView: {fileID: 1759706478}
+  _pauseView: {fileID: 969835597}
+  _stacks:
   - {fileID: 11400000, guid: 0d0a2e405b82e924da17567d4981b903, type: 2}
   - {fileID: 11400000, guid: 2947feb0c60d0c74885cf89b0bb921e0, type: 2}
   - {fileID: 11400000, guid: 6878c7ae91bdd8648858c5e93417d0c9, type: 2}
-  arenas:
+  _arenas:
   - {fileID: 11400000, guid: d9df38f757fd2774ca80d7d2a25fb5fb, type: 2}
   - {fileID: 11400000, guid: 166a4eb93568cfe43a91095bceb4f862, type: 2}
   - {fileID: 11400000, guid: c4759881335b3614a83f5647b1e0f32d, type: 2}
@@ -2926,8 +2926,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7697cd937d503c44fbfbe0cfe6af5f53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.UI::Game.UI.StackSelectView
-  buttonTemplate: {fileID: 992049204}
-  buttonRoot: {fileID: 1528096470}
+  _buttonTemplate: {fileID: 992049204}
+  _buttonRoot: {fileID: 1528096470}
 --- !u!1 &1500980319
 GameObject:
   m_ObjectHideFlags: 0
@@ -3691,8 +3691,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4173b83e44b8e49967ec14d89fdf2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.UI::Game.UI.HudMessagesView
-  label: {fileID: 1936652046}
-  holdSeconds: 3
+  _label: {fileID: 1936652046}
+  _holdSeconds: 3
 --- !u!224 &1759706479
 RectTransform:
   m_ObjectHideFlags: 0

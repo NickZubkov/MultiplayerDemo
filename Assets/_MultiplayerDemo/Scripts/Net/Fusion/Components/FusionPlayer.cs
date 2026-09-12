@@ -23,9 +23,9 @@ namespace Game.Net.Fusion
     [RequireComponent(typeof(PlayerRig))]
     public sealed class FusionPlayer : NetworkBehaviour
     {
-        [SerializeField] private InteractionRay ray;
-        [SerializeField] private HoldPoint holdPoint;
-        [SerializeField] private PlayerMotor motor;
+        [SerializeField] private InteractionRay _ray;
+        [SerializeField] private HoldPoint _holdPoint;
+        [SerializeField] private PlayerMotor _motor;
 
         private PlayerRig _rig;
         private DemoConfig _config;
@@ -37,7 +37,7 @@ namespace Game.Net.Fusion
         /// Куда предмет встаёт в руке. Родителем предмет не цепляется: сетевое состояние
         /// трансформа у Fusion мировое, и смена родителя разошлась бы с ним — предмет
         /// каждый тик дёргало бы между рукой и последней принятой точкой.
-        public Transform HoldAnchor => holdPoint == null ? transform : holdPoint.transform;
+        public Transform HoldAnchor => _holdPoint == null ? transform : _holdPoint.transform;
 
         [Inject]
         public void Construct(DemoConfig config) => _config = config;
@@ -48,20 +48,20 @@ namespace Game.Net.Fusion
         {
             _rig.SetLocal(HasStateAuthority);
 
-            if (!HasStateAuthority || ray == null) return;
+            if (!HasStateAuthority || _ray == null) return;
 
             _subscriptions = Disposable.Combine(
-                ray.PickRequested.Subscribe(OnPickRequested),
-                ray.DropRequested.Subscribe(_ => OnDropRequested()));
+                _ray.PickRequested.Subscribe(OnPickRequested),
+                _ray.DropRequested.Subscribe(_ => OnDropRequested()));
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState) => _subscriptions?.Dispose();
 
         public override void FixedUpdateNetwork()
         {
-            if (!HasStateAuthority || motor == null) return;
+            if (!HasStateAuthority || _motor == null) return;
 
-            motor.Step(Runner.DeltaTime);
+            _motor.Step(Runner.DeltaTime);
         }
 
         /// Ставится предметом при смене держателя — и у владельца, и у чужих машин.
@@ -69,9 +69,9 @@ namespace Game.Net.Fusion
         {
             _held = item;
 
-            if (ray != null)
+            if (_ray != null)
             {
-                ray.HandsBusy = item != null;
+                _ray.HandsBusy = item != null;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Game.Net.Fusion
         {
             if (_held == null) return;
 
-            _held.Release(ray.View.forward * _config.ThrowImpulse);
+            _held.Release(_ray.View.forward * _config.ThrowImpulse);
         }
     }
 }

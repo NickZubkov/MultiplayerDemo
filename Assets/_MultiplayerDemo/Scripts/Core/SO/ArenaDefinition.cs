@@ -10,12 +10,12 @@ namespace Game.Core
     [CreateAssetMenu(menuName = "Демка/Арена", fileName = "Arena_")]
     public sealed class ArenaDefinition : ScriptableObject
     {
-        [SerializeField] private string displayName = "Коробка";
-        [SerializeField] private string arenaId = "box";
-        [SerializeField] private string sceneName = "Arena";
+        [SerializeField] private string _displayName = "Коробка";
+        [SerializeField] private string _arenaId = "box";
+        [SerializeField] private string _sceneName = "Arena";
 
-        public string DisplayName => displayName;
-        public string ArenaId => arenaId;
-        public string SceneName => sceneName;
+        public string DisplayName => _displayName;
+        public string ArenaId => _arenaId;
+        public string SceneName => _sceneName;
     }
 }

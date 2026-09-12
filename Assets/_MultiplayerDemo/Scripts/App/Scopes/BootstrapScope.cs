@@ -10,12 +10,12 @@ namespace Game.App
     /// Сервисы конкретного стека появятся в дочернем scope его сцены.
     public sealed class BootstrapScope : LifetimeScope
     {
-        [SerializeField] private StackSelectView stackSelectView;
-        [SerializeField] private LobbyView lobbyView;
-        [SerializeField] private HudMessagesView hudView;
-        [SerializeField] private PauseView pauseView;
-        [SerializeField] private NetworkStackDefinition[] stacks;
-        [SerializeField] private ArenaDefinition[] arenas;
+        [SerializeField] private StackSelectView _stackSelectView;
+        [SerializeField] private LobbyView _lobbyView;
+        [SerializeField] private HudMessagesView _hudView;
+        [SerializeField] private PauseView _pauseView;
+        [SerializeField] private NetworkStackDefinition[] _stacks;
+        [SerializeField] private ArenaDefinition[] _arenas;
 
         /// Виды будим до сборки графа. Панель, выключенную в сцене галочкой, Unity
         /// обходит стороной: Awake у её компонентов не зовётся вовсе, и вид остаётся без
@@ -25,22 +25,22 @@ namespace Game.App
         /// состоянии сцену сохранили после вёрстки.
         protected override void Awake()
         {
-            stackSelectView.gameObject.SetActive(true);
-            lobbyView.gameObject.SetActive(true);
-            hudView.gameObject.SetActive(true);
-            pauseView.gameObject.SetActive(true);
+            _stackSelectView.gameObject.SetActive(true);
+            _lobbyView.gameObject.SetActive(true);
+            _hudView.gameObject.SetActive(true);
+            _pauseView.gameObject.SetActive(true);
 
             base.Awake();
         }
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterComponent<IStackSelectView>(stackSelectView);
-            builder.RegisterComponent<ILobbyView>(lobbyView);
-            builder.RegisterComponent<IHudMessages>(hudView);
-            builder.RegisterComponent<IPauseView>(pauseView);
-            builder.RegisterInstance(stacks);
-            builder.RegisterInstance(arenas);
+            builder.RegisterComponent<IStackSelectView>(_stackSelectView);
+            builder.RegisterComponent<ILobbyView>(_lobbyView);
+            builder.RegisterComponent<IHudMessages>(_hudView);
+            builder.RegisterComponent<IPauseView>(_pauseView);
+            builder.RegisterInstance(_stacks);
+            builder.RegisterInstance(_arenas);
             /// AsImplementedInterfaces тут не нужен: RegisterEntryPoint делает его сам,
             /// а повторный контракт роняет сборку конфликтом типов реализации.
             builder.RegisterEntryPoint<StackFlow>().AsSelf();

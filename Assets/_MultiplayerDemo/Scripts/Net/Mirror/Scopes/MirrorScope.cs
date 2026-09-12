@@ -18,22 +18,22 @@ namespace Game.Net.Mirror
     /// остаётся без IClock и видов и падает на первом же резолве.
     public sealed class MirrorScope : LifetimeScope
     {
-        [SerializeField] private MirrorStackDefinition stack;
-        [SerializeField] private MirrorNetworkManager manager;
-        [SerializeField] private MirrorDiscovery discovery;
-        [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private GameObject cratePrefab;
+        [SerializeField] private MirrorStackDefinition _stack;
+        [SerializeField] private MirrorNetworkManager _manager;
+        [SerializeField] private MirrorDiscovery _discovery;
+        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private GameObject _cratePrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
             /// Своё описание стека scope отдаёт как базовый тип: презентеру лобби нужна
             /// подпись поля ручного ввода, а знать про Mirror он не должен.
-            builder.RegisterInstance<NetworkStackDefinition>(stack);
+            builder.RegisterInstance<NetworkStackDefinition>(_stack);
 
             /// Менеджер регистрируем базовым типом — сессии хватает NetworkManager,
             /// а мост дотягивается до наследника напрямую, минуя контейнер.
-            builder.RegisterComponent<NetworkManager>(manager);
-            builder.RegisterComponent(discovery);
+            builder.RegisterComponent<NetworkManager>(_manager);
+            builder.RegisterComponent(_discovery);
 
             /// Lifetime.Singleton, а не Scoped, у всего в scope стека: Scoped VContainer
             /// пересоздаёт в том контейнере, где резолвят, и ArenaScope получил бы
@@ -42,10 +42,10 @@ namespace Game.Net.Mirror
             builder.Register<ArenaLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MirrorSessionControl>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MirrorHostBrowser>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register(container => new MirrorObjectFactory(container, new[] { playerPrefab, cratePrefab }),
+            builder.Register(container => new MirrorObjectFactory(container, new[] { _playerPrefab, _cratePrefab }),
                        Lifetime.Singleton);
             builder.Register(container => new MirrorWorldSpawner(container.Resolve<MirrorObjectFactory>(),
-                       playerPrefab, cratePrefab), Lifetime.Singleton)
+                       _playerPrefab, _cratePrefab), Lifetime.Singleton)
                    .AsImplementedInterfaces()
                    .AsSelf();
             builder.RegisterEntryPoint<LobbyPresenter>(Lifetime.Singleton).AsSelf();
@@ -54,7 +54,7 @@ namespace Game.Net.Mirror
             /// просит менеджер конструктором, и [Inject] в обратную сторону замкнул бы
             /// кольцо, на котором сборка контейнера падает.
             builder.RegisterBuildCallback(container =>
-                manager.Bind(container.Resolve<MirrorSessionControl>(),
+                _manager.Bind(container.Resolve<MirrorSessionControl>(),
                              container.Resolve<MirrorWorldSpawner>(),
                              container.Resolve<MirrorObjectFactory>()));
         }

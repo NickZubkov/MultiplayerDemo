@@ -22,23 +22,23 @@ namespace Game.Gameplay
     {
         /// Небольшая прижимающая скорость на земле: с нулевой CharacterController
         /// теряет контакт на первом же уклоне и начинает считать себя падающим.
-        private const float GroundedFallSpeed = -2f;
+        private const float GROUNDED_FALL_SPEED = -2f;
 
-        [SerializeField] private Transform view;
-        [SerializeField] private InputActionReference moveAction;
-        [SerializeField] private InputActionReference lookAction;
-        [SerializeField] private InputActionReference jumpAction;
-        [SerializeField] private InputActionReference sprintAction;
+        [SerializeField] private Transform _view;
+        [SerializeField] private InputActionReference _moveAction;
+        [SerializeField] private InputActionReference _lookAction;
+        [SerializeField] private InputActionReference _jumpAction;
+        [SerializeField] private InputActionReference _sprintAction;
 
         [Header("Значения FirstPersonController у Player_Base")]
-        [SerializeField] private float moveSpeed = 4f;
-        [SerializeField] private float sprintSpeed = 6f;
-        [SerializeField] private float speedChangeRate = 10f;
-        [SerializeField] private float jumpHeight = 1.2f;
-        [SerializeField] private float gravity = -15f;
-        [SerializeField] private float lookSensitivity = 1f;
-        [SerializeField] private float topClamp = 89f;
-        [SerializeField] private float bottomClamp = -89f;
+        [SerializeField] private float _moveSpeed = 4f;
+        [SerializeField] private float _sprintSpeed = 6f;
+        [SerializeField] private float _speedChangeRate = 10f;
+        [SerializeField] private float _jumpHeight = 1.2f;
+        [SerializeField] private float _gravity = -15f;
+        [SerializeField] private float _lookSensitivity = 1f;
+        [SerializeField] private float _topClamp = 89f;
+        [SerializeField] private float _bottomClamp = -89f;
 
         private CharacterController _controller;
         private float _yaw;
@@ -73,30 +73,30 @@ namespace Game.Gameplay
             var facing = Quaternion.Euler(0f, _yaw, 0f);
             transform.rotation = facing;
 
-            var input = moveAction.action.ReadValue<Vector2>();
+            var input = _moveAction.action.ReadValue<Vector2>();
             var wish = facing * new Vector3(input.x, 0f, input.y);
             if (wish.sqrMagnitude > 1f) wish.Normalize();
 
             var target = input == Vector2.zero
                 ? 0f
-                : sprintAction.action.IsPressed() ? sprintSpeed : moveSpeed;
+                : _sprintAction.action.IsPressed() ? _sprintSpeed : _moveSpeed;
 
-            _speed = Mathf.Lerp(_speed, target, deltaTime * speedChangeRate);
+            _speed = Mathf.Lerp(_speed, target, deltaTime * _speedChangeRate);
 
             if (_controller.isGrounded && _fallSpeed < 0f)
             {
-                _fallSpeed = GroundedFallSpeed;
+                _fallSpeed = GROUNDED_FALL_SPEED;
             }
 
             /// Нажатие копится кадрами, а тратится тиком: тик реже кадра, и без защёлки
             /// короткое нажатие пробела попадало бы между тиками и пропадало.
             if (_jumpPending && _controller.isGrounded)
             {
-                _fallSpeed = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                _fallSpeed = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
             }
 
             _jumpPending = false;
-            _fallSpeed += gravity * deltaTime;
+            _fallSpeed += _gravity * deltaTime;
 
             _controller.Move((wish * _speed + Vector3.up * _fallSpeed) * deltaTime);
         }
@@ -107,13 +107,13 @@ namespace Game.Gameplay
             /// и его приходится умножать на время кадра, иначе взгляд улетает. StarterAssets
             /// различает их по схеме управления PlayerInput, у нас схемы нет — спрашиваем
             /// устройство, с которого пришло само действие.
-            var scale = lookAction.action.activeControl?.device is Gamepad ? Time.deltaTime : 1f;
-            var look = lookAction.action.ReadValue<Vector2>() * (lookSensitivity * scale);
+            var scale = _lookAction.action.activeControl?.device is Gamepad ? Time.deltaTime : 1f;
+            var look = _lookAction.action.ReadValue<Vector2>() * (_lookSensitivity * scale);
 
             _yaw += look.x;
-            _pitch = Mathf.Clamp(_pitch - look.y, bottomClamp, topClamp);
+            _pitch = Mathf.Clamp(_pitch - look.y, _bottomClamp, _topClamp);
 
-            if (jumpAction.action.WasPressedThisFrame()) _jumpPending = true;
+            if (_jumpAction.action.WasPressedThisFrame()) _jumpPending = true;
         }
 
         /// Взгляд обновляется кадром, а корпус — тиком, и это не небрежность: тик у Fusion
@@ -126,7 +126,7 @@ namespace Game.Gameplay
         /// включая интерполяцию, происходит внутри NetworkRunner.Update.
         private void LateUpdate()
         {
-            if (view != null) view.rotation = Quaternion.Euler(_pitch, _yaw, 0f);
+            if (_view != null) _view.rotation = Quaternion.Euler(_pitch, _yaw, 0f);
         }
     }
 }

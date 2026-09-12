@@ -15,7 +15,7 @@ namespace Game.Net.Mirror
     /// В сцене у компонента два неочевидных значения. Порт 47778 вместо штатного 47777:
     /// на 47777 сидит собственный маяк NGO, а сокет Mirror заводится без ReuseAddress —
     /// два окна разных стеков на одной машине подрались бы за порт. Интервал опроса 1 с
-    /// вместо трёх: TTL записи о хосте — 3 с (HostRegistry.Ttl), при опросе раз в три
+    /// вместо трёх: TTL записи о хосте — 3 с (HostRegistry.TTL), при опросе раз в три
     /// секунды строка мигала бы от одной потерянной датаграммы.
     public sealed class MirrorDiscovery : NetworkDiscoveryBase<ServerRequest, MirrorHostBeacon>
     {

@@ -20,8 +20,8 @@ namespace Game.Net.Fusion
     /// в облаке этим занимается FusionSessionControl.
     public sealed class FusionHostBrowser : IHostBrowser
     {
-        private const string OwnStackId = "fusion";
-        private const string NoLobby = "Нет соединения с Photon";
+        private const string OWN_STACK_ID = "fusion";
+        private const string NO_LOBBY = "Нет соединения с Photon";
 
         private readonly FusionRunnerFactory _runners;
         private readonly IHudMessages _hud;
@@ -88,7 +88,7 @@ namespace Game.Net.Fusion
             {
                 if (!session.IsOpen || !session.IsVisible) continue;
 
-                entries.Add(new HostEntry(session.Name, session.PlayerCount, session.MaxPlayers, OwnStackId,
+                entries.Add(new HostEntry(session.Name, session.PlayerCount, session.MaxPlayers, OWN_STACK_ID,
                     session.Name, ArenaOf(session)));
             }
 
@@ -98,7 +98,7 @@ namespace Game.Net.Fusion
         private static string ArenaOf(SessionInfo session)
         {
             if (session.Properties == null) return null;
-            return session.Properties.TryGetValue(FusionSessionControl.ArenaKey, out var arena)
+            return session.Properties.TryGetValue(FusionSessionControl.ARENA_KEY, out var arena)
                 ? (string)arena
                 : null;
         }
@@ -121,7 +121,7 @@ namespace Game.Net.Fusion
 
             /// Пустое лобби обязано быть подписано причиной: молчаливо пустой список
             /// на демонстрации читается как поломка.
-            _hud.Show(NoLobby);
+            _hud.Show(NO_LOBBY);
             _hosts.Value = Array.Empty<HostEntry>();
         }
     }

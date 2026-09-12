@@ -18,11 +18,11 @@ namespace Game.Net.Ngo
     {
         /// Маяк вчетверо чаще TTL записи: хост успевает подтвердиться дважды,
         /// прежде чем одна потерянная датаграмма уронит его из чужого списка.
-        private const double BeaconInterval = 1.0;
+        private const double BEACON_INTERVAL = 1.0;
 
         /// Своим считаем только маяки NGO: в LAN может шуметь соседнее окно на Mirror,
         /// а его адрес нашему транспорту не подойдёт.
-        private const string OwnStackId = "ngo";
+        private const string OWN_STACK_ID = "ngo";
 
         private readonly HostRegistry _registry = new();
         private readonly ReactiveProperty<IReadOnlyList<HostEntry>> _hosts = new(Array.Empty<HostEntry>());
@@ -87,7 +87,7 @@ namespace Game.Net.Ngo
         {
             while (_socket.TryReceive(out var payload))
             {
-                if (LanBeaconCodec.TryDecode(payload, out var entry) && entry.StackId == OwnStackId)
+                if (LanBeaconCodec.TryDecode(payload, out var entry) && entry.StackId == OWN_STACK_ID)
                 {
                     _registry.Report(entry, _clock.Now);
                 }
@@ -97,11 +97,11 @@ namespace Game.Net.Ngo
         private void SendBeaconIfDue()
         {
             if (_advertisedName == null) return;
-            if (_clock.Now - _lastBeaconAt < BeaconInterval) return;
+            if (_clock.Now - _lastBeaconAt < BEACON_INTERVAL) return;
 
             _lastBeaconAt = _clock.Now;
-            var entry = new HostEntry(_advertisedName, _players, _maxPlayers, OwnStackId,
-                $"{LocalAddress()}:{NgoSessionControl.Port}", _advertisedArena);
+            var entry = new HostEntry(_advertisedName, _players, _maxPlayers, OWN_STACK_ID,
+                $"{LocalAddress()}:{NgoSessionControl.PORT}", _advertisedArena);
             _socket.Send(LanBeaconCodec.Encode(entry));
         }
 

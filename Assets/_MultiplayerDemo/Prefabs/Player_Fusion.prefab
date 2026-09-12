@@ -57,7 +57,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7488200530707037916, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-      propertyPath: 'ownerOnlyBehaviours.Array.data[1]'
+      propertyPath: '_ownerOnlyBehaviours.Array.data[1]'
       value: 
       objectReference: {fileID: 1174096061112759478}
     - target: {fileID: 7885550664819544973, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
@@ -175,9 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 407a54dcb223f594b9f77e9b757d6bff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Net.Fusion::Game.Net.Fusion.FusionPlayer
-  ray: {fileID: 8630197118455471659}
-  holdPoint: {fileID: 2943472893646554208}
-  motor: {fileID: 1174096061112759478}
+  _ray: {fileID: 8630197118455471659}
+  _holdPoint: {fileID: 2943472893646554208}
+  _motor: {fileID: 1174096061112759478}
 --- !u!114 &1174096061112759478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,19 +190,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2640cfcfe0a80d248ad3797d9a388ed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.PlayerMotor
-  view: {fileID: 1805782299225358536}
-  moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  sprintAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  moveSpeed: 4
-  sprintSpeed: 6
-  speedChangeRate: 10
-  jumpHeight: 1.2
-  gravity: -15
-  lookSensitivity: 0.1
-  topClamp: 89
-  bottomClamp: -89
+  _view: {fileID: 1805782299225358536}
+  _moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _sprintAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _moveSpeed: 4
+  _sprintSpeed: 6
+  _speedChangeRate: 10
+  _jumpHeight: 1.2
+  _gravity: -15
+  _lookSensitivity: 0.1
+  _topClamp: 89
+  _bottomClamp: -89
 --- !u!114 &8630197118455471659 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5569206681219037454, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}

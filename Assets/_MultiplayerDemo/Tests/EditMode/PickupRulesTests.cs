@@ -21,12 +21,12 @@ namespace Game.Core.Tests
         [Test]
         public void DeniesBeyondMaxDistance() =>
             Assert.AreEqual(PickupDenial.TooFar,
-                PickupRules.Evaluate(new PickupQuery(true, true, PickupRules.MaxDistance + 0.01f, true)));
+                PickupRules.Evaluate(new PickupQuery(true, true, PickupRules.MAX_DISTANCE + 0.01f, true)));
 
         [Test]
         public void AllowsExactlyAtMaxDistance() =>
             Assert.AreEqual(PickupDenial.None,
-                PickupRules.Evaluate(new PickupQuery(true, true, PickupRules.MaxDistance, true)));
+                PickupRules.Evaluate(new PickupQuery(true, true, PickupRules.MAX_DISTANCE, true)));
 
         [Test]
         public void DeniesWithoutLineOfSight() =>

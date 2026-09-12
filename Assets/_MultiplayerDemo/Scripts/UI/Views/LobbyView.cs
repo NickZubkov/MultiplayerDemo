@@ -10,17 +10,17 @@ namespace Game.UI
 {
     public sealed class LobbyView : MonoBehaviour, ILobbyView
     {
-        [SerializeField] private TMP_InputField playerName;
-        [SerializeField] private TMP_InputField manualAddress;
-        [SerializeField] private Button hostButton;
-        [SerializeField] private Button joinManualButton;
-        [SerializeField] private Button backToStacksButton;
-        [SerializeField] private Button hostEntryTemplate;
-        [SerializeField] private Transform hostListRoot;
-        [SerializeField] private Button arenaEntryTemplate;
-        [SerializeField] private Transform arenaListRoot;
-        [SerializeField] private TMP_Text emptyListHint;
-        [SerializeField] private TMP_Text manualHint;
+        [SerializeField] private TMP_InputField _playerName;
+        [SerializeField] private TMP_InputField _manualAddress;
+        [SerializeField] private Button _hostButton;
+        [SerializeField] private Button _joinManualButton;
+        [SerializeField] private Button _backToStacksButton;
+        [SerializeField] private Button _hostEntryTemplate;
+        [SerializeField] private Transform _hostListRoot;
+        [SerializeField] private Button _arenaEntryTemplate;
+        [SerializeField] private Transform _arenaListRoot;
+        [SerializeField] private TMP_Text _emptyListHint;
+        [SerializeField] private TMP_Text _manualHint;
 
         private readonly Subject<string> _hostRequested = new();
         private readonly Subject<HostEntry> _joinRequested = new();
@@ -37,21 +37,21 @@ namespace Game.UI
 
         private void Awake()
         {
-            hostButton.onClick.AddListener(() => _hostRequested.OnNext(playerName.text));
-            backToStacksButton.onClick.AddListener(() => _backToStacksRequested.OnNext(Unit.Default));
+            _hostButton.onClick.AddListener(() => _hostRequested.OnNext(_playerName.text));
+            _backToStacksButton.onClick.AddListener(() => _backToStacksRequested.OnNext(Unit.Default));
 
             /// Уровень пустой: маяка не было, и какой уровень у того хоста — неизвестно.
             /// Презентер подставит отмеченный в лобби.
-            joinManualButton.onClick.AddListener(() =>
-                _joinRequested.OnNext(new HostEntry("вручную", 0, 0, "manual", manualAddress.text, null)));
+            _joinManualButton.onClick.AddListener(() =>
+                _joinRequested.OnNext(new HostEntry("вручную", 0, 0, "manual", _manualAddress.text, null)));
 
             /// Начальное состояние задаём кодом, а не галочками в сцене: панель верстают
             /// включённой, шаблоны строк остаются как придётся, и любая забытая галочка
             /// вылезла бы игроку лишней строкой или экраном поверх выбора стека. Лобби
             /// покажет презентер, когда сцена стека загрузится.
-            hostEntryTemplate.gameObject.SetActive(false);
-            arenaEntryTemplate.gameObject.SetActive(false);
-            emptyListHint.gameObject.SetActive(false);
+            _hostEntryTemplate.gameObject.SetActive(false);
+            _arenaEntryTemplate.gameObject.SetActive(false);
+            _emptyListHint.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
 
@@ -71,16 +71,16 @@ namespace Game.UI
         /// и должен видеть, куда идёт.
         public void ShowHosts(IReadOnlyList<HostEntry> hosts)
         {
-            foreach (Transform child in hostListRoot)
+            foreach (Transform child in _hostListRoot)
             {
                 Destroy(child.gameObject);
             }
 
-            emptyListHint.gameObject.SetActive(hosts.Count == 0);
+            _emptyListHint.gameObject.SetActive(hosts.Count == 0);
 
             foreach (var host in hosts)
             {
-                var row = Instantiate(hostEntryTemplate, hostListRoot);
+                var row = Instantiate(_hostEntryTemplate, _hostListRoot);
                 row.GetComponentInChildren<TMP_Text>().text =
                     $"{host.Name} — {host.Players}/{host.MaxPlayers} — {ArenaName(host.ArenaId)}";
                 var captured = host;
@@ -94,14 +94,14 @@ namespace Game.UI
             _arenas = arenas;
             _arenaRows.Clear();
 
-            foreach (Transform child in arenaListRoot)
+            foreach (Transform child in _arenaListRoot)
             {
                 Destroy(child.gameObject);
             }
 
             foreach (var arena in arenas)
             {
-                var row = Instantiate(arenaEntryTemplate, arenaListRoot);
+                var row = Instantiate(_arenaEntryTemplate, _arenaListRoot);
                 var label = row.GetComponentInChildren<TMP_Text>();
                 label.text = arena.DisplayName;
                 var captured = arena;
@@ -121,9 +121,9 @@ namespace Game.UI
             }
         }
 
-        public void SetEmptyHint(string text) => emptyListHint.text = text;
+        public void SetEmptyHint(string text) => _emptyListHint.text = text;
 
-        public void SetManualHint(string text) => manualHint.text = text;
+        public void SetManualHint(string text) => _manualHint.text = text;
 
         /// В маяке едет короткий id, а игрок читает название. Чужой id — это сборка
         /// с другим набором уровней: подключиться к ней всё равно не выйдет.

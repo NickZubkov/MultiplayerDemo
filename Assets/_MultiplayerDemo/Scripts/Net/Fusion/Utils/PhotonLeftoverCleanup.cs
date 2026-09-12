@@ -26,7 +26,7 @@ namespace Game.Net.Fusion
         /// Все три имени Photon задаёт литералом в местах создания, так что список закрыт.
         /// `EventBetterWorker` в него не входит намеренно: ему ставят `HideAndDontSave`,
         /// в файл сцены он не попадёт и трогать его — лезть в чужую статику.
-        private static readonly HashSet<string> Names = new()
+        private static readonly HashSet<string> NAMES = new()
         {
             "ConnectionHandler",
             "RegionHandler",
@@ -78,7 +78,7 @@ namespace Game.Net.Fusion
         /// остаётся один `Transform`.
         private static bool IsPhotonLeftover(GameObject go)
         {
-            if (!Names.Contains(go.name)) return false;
+            if (!NAMES.Contains(go.name)) return false;
             if (go.transform.childCount > 0) return false;
 
             foreach (var component in go.GetComponents<Component>())

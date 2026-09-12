@@ -9,8 +9,8 @@ namespace Game.UI
 {
     public sealed class StackSelectView : MonoBehaviour, IStackSelectView
     {
-        [SerializeField] private Button buttonTemplate;
-        [SerializeField] private Transform buttonRoot;
+        [SerializeField] private Button _buttonTemplate;
+        [SerializeField] private Transform _buttonRoot;
 
         private readonly Subject<NetworkStackDefinition> _chosen = new();
 
@@ -20,7 +20,7 @@ namespace Game.UI
         /// встал бы в список лишней кнопкой без стека. Сам экран здесь не прячем, в
         /// отличие от лобби и паузы: он и так первый на очереди, а презентер показывает
         /// его лишь в фазе Startup — спрятанный, он подарил бы игре пустой первый кадр.
-        private void Awake() => buttonTemplate.gameObject.SetActive(false);
+        private void Awake() => _buttonTemplate.gameObject.SetActive(false);
 
         private void OnDestroy() => _chosen.Dispose();
 
@@ -28,14 +28,14 @@ namespace Game.UI
         {
             gameObject.SetActive(true);
 
-            foreach (Transform child in buttonRoot)
+            foreach (Transform child in _buttonRoot)
             {
                 Destroy(child.gameObject);
             }
 
             foreach (var stack in stacks)
             {
-                var button = Instantiate(buttonTemplate, buttonRoot);
+                var button = Instantiate(_buttonTemplate, _buttonRoot);
                 button.GetComponentInChildren<TMP_Text>().text = stack.DisplayName;
                 var captured = stack;
                 button.onClick.AddListener(() => _chosen.OnNext(captured));

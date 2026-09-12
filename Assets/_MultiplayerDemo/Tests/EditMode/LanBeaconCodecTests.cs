@@ -25,7 +25,7 @@ namespace Game.Core.Tests
 
         [Test]
         public void TruncatedPayloadIsRejected() =>
-            Assert.IsFalse(LanBeaconCodec.TryDecode(LanBeaconCodec.Magic + "|Коля", out _));
+            Assert.IsFalse(LanBeaconCodec.TryDecode(LanBeaconCodec.MAGIC + "|Коля", out _));
 
         /// Пакет сборки без уровня отсекается по магии, а не по числу полей:
         /// отказ должен быть решением, а не побочным следствием длины.

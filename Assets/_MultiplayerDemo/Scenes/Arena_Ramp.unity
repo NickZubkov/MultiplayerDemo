@@ -656,7 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 1
+  _kind: 1
 --- !u!1 &1137950874
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 0
+  _kind: 0
 --- !u!1 &1222159457
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 1
+  _kind: 1
 --- !u!1 &1315292965
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,7 +791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 0
+  _kind: 0
 --- !u!1 &1323498104
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 1
+  _kind: 1
 --- !u!1 &1335656108
 GameObject:
   m_ObjectHideFlags: 0
@@ -1431,7 +1431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 0
+  _kind: 0
 --- !u!1 &2014920787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1476,7 +1476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 0
+  _kind: 0
 --- !u!1 &2122955037
 GameObject:
   m_ObjectHideFlags: 0
@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d80857ea4b9db42b0a7af84f3b7d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.SpawnPointMarker
-  kind: 1
+  _kind: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

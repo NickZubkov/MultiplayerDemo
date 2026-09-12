@@ -20,7 +20,7 @@ namespace Game.Net.Mirror
     {
         /// Своими считаем только хосты Mirror. Проверка почти формальная — у Mirror свой
         /// порт и своё рукопожатие, — но StackId едет в HostEntry и без неё был бы пуст.
-        private const string OwnStackId = "mirror";
+        private const string OWN_STACK_ID = "mirror";
 
         private readonly MirrorDiscovery _discovery;
         private readonly IClock _clock;
@@ -102,7 +102,7 @@ namespace Game.Net.Mirror
 
         private void OnHostFound(MirrorHostBeacon beacon)
         {
-            var entry = new HostEntry(beacon.HostName, beacon.Players, beacon.MaxPlayers, OwnStackId,
+            var entry = new HostEntry(beacon.HostName, beacon.Players, beacon.MaxPlayers, OWN_STACK_ID,
                 $"{beacon.EndPoint.Address}:{beacon.Port}", beacon.ArenaId);
 
             _registry.Report(entry, _clock.Now);

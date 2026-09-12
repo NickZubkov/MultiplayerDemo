@@ -18,8 +18,8 @@ namespace Game.Net.Mirror
     [RequireComponent(typeof(PlayerRig))]
     public sealed class MirrorPlayer : NetworkBehaviour
     {
-        [SerializeField] private InteractionRay ray;
-        [SerializeField] private HoldPoint holdPoint;
+        [SerializeField] private InteractionRay _ray;
+        [SerializeField] private HoldPoint _holdPoint;
 
         private PlayerRig _rig;
         private DemoConfig _config;
@@ -31,7 +31,7 @@ namespace Game.Net.Mirror
         /// Куда предмет встаёт в руке. У Mirror нет ограничения NGO «родителем может быть
         /// только сетевой объект», поэтому предмет цепляется прямо к точке крепления
         /// и никаких пересчётов смещения не нужно.
-        public Transform HoldAnchor => holdPoint == null ? transform : holdPoint.transform;
+        public Transform HoldAnchor => _holdPoint == null ? transform : _holdPoint.transform;
 
         [Inject]
         public void Construct(DemoConfig config) => _config = config;
@@ -44,11 +44,11 @@ namespace Game.Net.Mirror
         {
             _rig.SetLocal(isLocalPlayer);
 
-            if (!isLocalPlayer || ray == null) return;
+            if (!isLocalPlayer || _ray == null) return;
 
             _subscriptions = Disposable.Combine(
-                ray.PickRequested.Subscribe(OnPickRequested),
-                ray.DropRequested.Subscribe(_ => OnDropRequested()));
+                _ray.PickRequested.Subscribe(OnPickRequested),
+                _ray.DropRequested.Subscribe(_ => OnDropRequested()));
         }
 
         public override void OnStopClient() => _subscriptions?.Dispose();
@@ -58,9 +58,9 @@ namespace Game.Net.Mirror
         {
             _held = item;
 
-            if (ray != null)
+            if (_ray != null)
             {
-                ray.HandsBusy = item != null;
+                _ray.HandsBusy = item != null;
             }
         }
 
@@ -77,7 +77,7 @@ namespace Game.Net.Mirror
         {
             if (_held == null) return;
 
-            _held.CmdRequestDrop(ray.View.forward * _config.ThrowImpulse);
+            _held.CmdRequestDrop(_ray.View.forward * _config.ThrowImpulse);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace Game.Gameplay
     public sealed class PlayerRig : MonoBehaviour
     {
         [Tooltip("Работает только у владельца: PlayerInput, FirstPersonController, Camera, AudioListener")]
-        [SerializeField] private Behaviour[] ownerOnlyBehaviours;
-        [SerializeField] private GameObject[] ownerOnlyObjects;
+        [SerializeField] private Behaviour[] _ownerOnlyBehaviours;
+        [SerializeField] private GameObject[] _ownerOnlyObjects;
 
         public bool IsLocal { get; private set; }
 
@@ -17,12 +17,12 @@ namespace Game.Gameplay
         {
             IsLocal = isLocal;
 
-            foreach (var behaviour in ownerOnlyBehaviours)
+            foreach (var behaviour in _ownerOnlyBehaviours)
             {
                 if (behaviour) behaviour.enabled = isLocal;
             }
 
-            foreach (var go in ownerOnlyObjects)
+            foreach (var go in _ownerOnlyObjects)
             {
                 if (go) go.SetActive(isLocal);
             }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ab5d549e756a424695845e718e729b6, type: 3}
   m_Name: Stack_Fusion
   m_EditorClassIdentifier: Game.Net.Fusion::Game.Net.Fusion.FusionStackDefinition
-  displayName: Fusion
-  stackId: fusion
-  managerScene: Net_Fusion
-  manualEntryHint: "\u0418\u043C\u044F \u0441\u0435\u0441\u0441\u0438\u0438"
+  _displayName: Fusion
+  _stackId: fusion
+  _managerScene: Net_Fusion
+  _manualEntryHint: "\u0418\u043C\u044F \u0441\u0435\u0441\u0441\u0438\u0438"

@@ -28,9 +28,9 @@ namespace Game.Net.Fusion
     /// редакторе, где оригинал доступен, и ругается, если копия отстала.
     public static class FusionConfigCopy
     {
-        public const string AssetPath = "Assets/_MultiplayerDemo/Settings/Fusion_ConfigCopy.asset";
+        public const string ASSET_PATH = "Assets/_MultiplayerDemo/Settings/Fusion_ConfigCopy.asset";
 
-        private const string MenuPath = "Tools/MultiplayerDemo/Обновить копию конфигурации Fusion";
+        private const string MENU_PATH = "Tools/MultiplayerDemo/Обновить копию конфигурации Fusion";
 
         /// Путь оригинала спрашиваем у самого Fusion, а не пишем строкой: он объявлен
         /// атрибутом на типе ассета и при обновлении пакета может переехать.
@@ -45,7 +45,7 @@ namespace Game.Net.Fusion
             }
         }
 
-        [MenuItem(MenuPath)]
+        [MenuItem(MENU_PATH)]
         public static void Regenerate()
         {
             var original = LoadOriginal();
@@ -58,7 +58,7 @@ namespace Game.Net.Fusion
             }
 
             var copy = UnityEngine.Object.Instantiate(original);
-            AssetDatabase.CreateAsset(copy, AssetPath);
+            AssetDatabase.CreateAsset(copy, ASSET_PATH);
 
             /// Имя равняем на оригинал уже после создания: CreateAsset переименовывает объект
             /// в имя файла, а по имени идёт сверка копии с оригиналом — иначе она расходилась
@@ -67,11 +67,11 @@ namespace Game.Net.Fusion
             EditorUtility.SetDirty(copy);
             AssetDatabase.SaveAssets();
 
-            Debug.Log($"Копия конфигурации Fusion обновлена: {AssetPath}");
+            Debug.Log($"Копия конфигурации Fusion обновлена: {ASSET_PATH}");
         }
 
         public static NetworkProjectConfigAsset Load() =>
-            AssetDatabase.LoadAssetAtPath<NetworkProjectConfigAsset>(AssetPath);
+            AssetDatabase.LoadAssetAtPath<NetworkProjectConfigAsset>(ASSET_PATH);
 
         public static NetworkProjectConfigAsset LoadOriginal() =>
             AssetDatabase.LoadAssetAtPath<NetworkProjectConfigAsset>(OriginalPath);
@@ -85,7 +85,7 @@ namespace Game.Net.Fusion
             if (EditorJsonUtility.ToJson(original) == EditorJsonUtility.ToJson(copy)) return;
 
             Debug.LogWarning("Копия конфигурации Fusion отстала от оригинала: виртуальные игроки MPPM "
-                + $"возьмут старую таблицу префабов. Обновите её через «{MenuPath}».");
+                + $"возьмут старую таблицу префабов. Обновите её через «{MENU_PATH}».");
         }
     }
 }

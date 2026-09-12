@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5dc7de3481037a4f94716f06dfb4893, type: 3}
   m_Name: Arena_Ramp
   m_EditorClassIdentifier: Game.Core::Game.Core.ArenaDefinition
-  displayName: "\u041F\u0430\u043D\u0434\u0443\u0441"
-  arenaId: ramp
-  sceneName: Arena_Ramp
+  _displayName: "\u041F\u0430\u043D\u0434\u0443\u0441"
+  _arenaId: ramp
+  _sceneName: Arena_Ramp

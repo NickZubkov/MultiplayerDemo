@@ -21,17 +21,17 @@ namespace Game.Net.Ngo
     /// на случай, если там забудут проставить parentReference.
     public sealed class NgoScope : LifetimeScope
     {
-        [SerializeField] private NgoStackDefinition stack;
-        [SerializeField] private NetworkManager manager;
-        [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private GameObject cratePrefab;
+        [SerializeField] private NgoStackDefinition _stack;
+        [SerializeField] private NetworkManager _manager;
+        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private GameObject _cratePrefab;
 
         protected override void Configure(IContainerBuilder builder)
         {
             /// Своё описание стека scope отдаёт как базовый тип: презентеру лобби нужна
             /// подпись поля ручного ввода, а знать про NGO он не должен.
-            builder.RegisterInstance<NetworkStackDefinition>(stack);
-            builder.RegisterComponent(manager);
+            builder.RegisterInstance<NetworkStackDefinition>(_stack);
+            builder.RegisterComponent(_manager);
 
             /// Lifetime.Singleton, а не Scoped, у всего в этом scope — и это не про «один
             /// на приложение»: регистрация объявлена здесь, поэтому экземпляр создаётся здесь
@@ -49,7 +49,7 @@ namespace Game.Net.Ngo
             builder.Register<NgoSessionControl>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<NgoHostBrowser>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterEntryPoint<NgoWorldSpawner>(
-                       container => new NgoWorldSpawner(container, manager, cratePrefab), Lifetime.Singleton)
+                       container => new NgoWorldSpawner(container, _manager, _cratePrefab), Lifetime.Singleton)
                    .AsSelf();
             builder.RegisterEntryPoint<LobbyPresenter>(Lifetime.Singleton).AsSelf();
 
@@ -59,8 +59,8 @@ namespace Game.Net.Ngo
             /// живёт в этой же сцене и умирает вместе со scope.
             builder.RegisterBuildCallback(container =>
             {
-                manager.PrefabHandler.AddHandler(playerPrefab, new NgoObjectFactory(container, playerPrefab));
-                manager.PrefabHandler.AddHandler(cratePrefab, new NgoObjectFactory(container, cratePrefab));
+                _manager.PrefabHandler.AddHandler(_playerPrefab, new NgoObjectFactory(container, _playerPrefab));
+                _manager.PrefabHandler.AddHandler(_cratePrefab, new NgoObjectFactory(container, _cratePrefab));
             });
         }
     }

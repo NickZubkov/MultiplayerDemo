@@ -5,7 +5,7 @@ namespace Game.Core
     /// Ключ — JoinToken: один хост остаётся одной строкой, сколько бы маяков ни прислал.
     public sealed class HostRegistry
     {
-        public const double Ttl = 3.0;
+        public const double TTL = 3.0;
 
         private readonly Dictionary<string, (HostEntry Entry, double SeenAt)> _seen = new();
 
@@ -18,7 +18,7 @@ namespace Game.Core
 
             foreach (var pair in _seen)
             {
-                if (now - pair.Value.SeenAt < Ttl)
+                if (now - pair.Value.SeenAt < TTL)
                 {
                     alive.Add(pair.Value.Entry);
                 }

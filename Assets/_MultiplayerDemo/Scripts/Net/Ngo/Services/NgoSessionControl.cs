@@ -10,7 +10,7 @@ namespace Game.Net.Ngo
 {
     public sealed class NgoSessionControl : ISessionControl, IDisposable
     {
-        public const ushort Port = 7777;
+        public const ushort PORT = 7777;
 
         private readonly NetworkManager _manager;
         private readonly ReactiveProperty<SessionState> _state = new(new SessionState(SessionPhase.Idle));
@@ -35,7 +35,7 @@ namespace Game.Net.Ngo
         /// Уровень здесь не нужен: о нём расскажет маяк NgoHostBrowser уже после старта.
         public UniTask StartHostAsync(string playerName, string arenaId, CancellationToken token)
         {
-            _manager.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", Port, "0.0.0.0");
+            _manager.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", PORT, "0.0.0.0");
             _state.Value = _manager.StartHost()
                 ? new SessionState(SessionPhase.Hosting)
                 : new SessionState(SessionPhase.Failed, "Не удалось поднять хост");
