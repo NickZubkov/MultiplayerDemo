@@ -15,17 +15,11 @@ namespace Game.Net.Fusion
     /// «Мой» в Shared Mode — это власть над состоянием: аватар создаёт себе сам владелец,
     /// и StateAuthority остаётся у него. Ни владельца ввода, ни сервера спрашивать не нужно,
     /// и желания игрока никуда не отправляются: тот, кто их придумал, их же и исполняет.
-    ///
-    /// Отсюда же и движение. FirstPersonController на этом префабе выключен, а персонажа
-    /// двигает PlayerMotor — но не сам, а отсюда, из FixedUpdateNetwork: NetworkTransform
-    /// в Shared Mode накладывает состояние на трансформ владельца каждый кадр, и всё,
-    /// что записано мимо тика, стирается вместе с движением.
     [RequireComponent(typeof(PlayerRig))]
     public sealed class FusionPlayer : NetworkBehaviour
     {
         [SerializeField] private InteractionRay _ray;
         [SerializeField] private HoldPoint _holdPoint;
-        [SerializeField] private PlayerMotor _motor;
 
         private PlayerRig _rig;
         private DemoConfig _config;
@@ -56,13 +50,6 @@ namespace Game.Net.Fusion
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState) => _subscriptions?.Dispose();
-
-        public override void FixedUpdateNetwork()
-        {
-            if (!HasStateAuthority || _motor == null) return;
-
-            _motor.Step(Runner.DeltaTime);
-        }
 
         /// Ставится предметом при смене держателя — и у владельца, и у чужих машин.
         public void SetHeldItem(FusionItem item)

@@ -67,14 +67,14 @@ namespace Game.UI
             if (this == null) return;
 
             gameObject.SetActive(false);
-            if (captureCursor) SetCursorCaptured(true);
+            SetCursorCaptured(captureCursor);
         }
 
         private void OnCancel(InputAction.CallbackContext context) => _toggle.OnNext(Unit.Default);
 
-        /// Курсор — забота этого экрана: в матче его держит захваченным контроллер
-        /// от Starter Assets, и без освобождения по кнопкам паузы не попасть. Обратно
-        /// захват возвращаем только при возврате в матч — в лобби курсор нужен игроку.
+        /// Курсор — забота этого экрана: курсором до задачи 15.7 распоряжается
+        /// LobbyPresenter через этот вид. В матче он захвачен, в лобби и в самой
+        /// паузе — свободен: там он нужен игроку для кнопок.
         private static void SetCursorCaptured(bool captured)
         {
             Cursor.lockState = captured ? CursorLockMode.Locked : CursorLockMode.None;

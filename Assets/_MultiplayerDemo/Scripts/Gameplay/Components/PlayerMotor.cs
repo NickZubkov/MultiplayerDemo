@@ -1,132 +1,104 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Game.Gameplay
 {
-    /// Ходьба, прыжок и взгляд от первого лица. Компонент завёлся не от хорошей жизни:
-    /// FirstPersonController из StarterAssets двигает персонажа в Update, а Fusion
-    /// в Shared Mode каждый кадр заново накладывает на трансформ сетевое состояние —
-    /// всё, что записано между тиками, стирается, и капсула стоит на месте. Двигаться
-    /// персонаж обязан внутри тика, поэтому шаг здесь и не привязан к Update: его зовёт
-    /// адаптер стека, у Fusion это FixedUpdateNetwork.
+    /// Контроллер по умолчанию (PlayerMotorProvider). Двигается сам, в Update: сеть только
+    /// наблюдает позу владельца (спека Ц2). Ввод приходит кадром-данными — это задел под
+    /// «полный Б» (спека § 13), где шаг прогоняется по чужому вводу.
     ///
-    /// Сети компонент по-прежнему не знает — ему передают только шаг времени. Значения
-    /// по умолчанию сняты с FirstPersonController на Player_Base, чтобы ходьба ощущалась
-    /// одинаково на всех трёх стеках.
-    ///
-    /// Ссылаться на сам FirstPersonController нельзя: StarterAssets живут без asmdef,
-    /// то есть в Assembly-CSharp, а он ссылается на наши сборки, а не наоборот. Ввод
-    /// поэтому читается прямо из project-wide actions, как это уже делает InteractionRay.
+    /// Ссылаться на FirstPersonController нельзя: StarterAssets живут в Assembly-CSharp.
+    /// Значения по умолчанию сняты с него, чтобы ходьба не зависела от выбранного провайдера.
     [RequireComponent(typeof(CharacterController))]
-    public sealed class PlayerMotor : MonoBehaviour
+    public sealed class PlayerMotor : MonoBehaviour, IAvatarController
     {
-        /// Небольшая прижимающая скорость на земле: с нулевой CharacterController
-        /// теряет контакт на первом же уклоне и начинает считать себя падающим.
+        /// Небольшая прижимающая скорость на земле: с нулевой CharacterController теряет
+        /// контакт на первом же уклоне и начинает считать себя падающим.
         private const float GROUNDED_FALL_SPEED = -2f;
 
-        [SerializeField] private Transform _view;
-        [SerializeField] private InputActionReference _moveAction;
-        [SerializeField] private InputActionReference _lookAction;
-        [SerializeField] private InputActionReference _jumpAction;
-        [SerializeField] private InputActionReference _sprintAction;
-
-        [Header("Значения FirstPersonController у Player_Base")]
-        [SerializeField] private float _moveSpeed = 4f;
-        [SerializeField] private float _sprintSpeed = 6f;
-        [SerializeField] private float _speedChangeRate = 10f;
-        [SerializeField] private float _jumpHeight = 1.2f;
-        [SerializeField] private float _gravity = -15f;
-        [SerializeField] private float _lookSensitivity = 1f;
-        [SerializeField] private float _topClamp = 89f;
-        [SerializeField] private float _bottomClamp = -89f;
-
         private CharacterController _controller;
+        private Transform _view;
+        private IPlayerInput _input;
+        private MotorTuning _tuning;
         private float _yaw;
         private float _pitch;
         private float _speed;
         private float _fallSpeed;
-        private bool _jumpPending;
 
         private void Awake() => _controller = GetComponent<CharacterController>();
 
-        /// Компонент включается в момент, когда сеть сказала «этот персонаж мой», —
-        /// к этому времени капсула уже стоит в своей точке спавна, и направление взгляда
-        /// надо взять оттуда, а не начинать с нуля.
+        /// Мотор навешивается, когда капсула уже стоит в точке спавна: направление взгляда
+        /// берём оттуда. CharacterController помнит позицию, снятую при включении, и на первом
+        /// же Move вернулся бы к ней — выключение и включение эту память сбрасывают.
         private void OnEnable()
         {
             _yaw = transform.eulerAngles.y;
             _pitch = 0f;
-
-            /// CharacterController помнит позицию, снятую при включении, и на первом же Move
-            /// возвращается к ней: объект создаётся в начале координат и только потом
-            /// переезжает в точку спавна. Выключение и включение эту память сбрасывает —
-            /// тем же приёмом и по той же причине лечит спавн NetworkCharacterController
-            /// в самом Fusion.
             _controller.enabled = false;
             _controller.enabled = true;
         }
 
-        /// Шаг симуляции: поворот корпуса, горизонтальная скорость, гравитация, прыжок.
-        /// Время приходит снаружи — у Fusion это Runner.DeltaTime, то есть длина тика.
-        public void Step(float deltaTime)
+        public void Configure(Transform view, IPlayerInput input, MotorTuning tuning)
+        {
+            _view = view;
+            _input = input;
+            _tuning = tuning;
+        }
+
+        public void Teleport(Vector3 position, Quaternion rotation)
+        {
+            _controller.enabled = false;
+            transform.SetPositionAndRotation(position, rotation);
+            _controller.enabled = true;
+            _yaw = rotation.eulerAngles.y;
+            _speed = 0f;
+            _fallSpeed = 0f;
+        }
+
+        private void Update()
+        {
+            if (_input == null) return;
+
+            var frame = _input.Current;
+            _yaw += frame.Look.x;
+            _pitch = Mathf.Clamp(_pitch - frame.Look.y, _tuning.BottomClamp, _tuning.TopClamp);
+
+            Move(frame, Time.deltaTime);
+        }
+
+        /// LateUpdate, а не Update: мировой поворот дочернего объекта считается от родителя,
+        /// а родителя в этом же кадре ещё может подвинуть сеть — у Fusion вся его работа идёт
+        /// внутри NetworkRunner.Update.
+        private void LateUpdate()
+        {
+            if (_view != null) _view.rotation = Quaternion.Euler(_pitch, _yaw, 0f);
+        }
+
+        private void Move(PlayerInputFrame frame, float deltaTime)
         {
             var facing = Quaternion.Euler(0f, _yaw, 0f);
             transform.rotation = facing;
 
-            var input = _moveAction.action.ReadValue<Vector2>();
-            var wish = facing * new Vector3(input.x, 0f, input.y);
+            var wish = facing * new Vector3(frame.Move.x, 0f, frame.Move.y);
             if (wish.sqrMagnitude > 1f) wish.Normalize();
 
-            var target = input == Vector2.zero
+            var target = frame.Move == Vector2.zero
                 ? 0f
-                : _sprintAction.action.IsPressed() ? _sprintSpeed : _moveSpeed;
+                : frame.Sprint ? _tuning.SprintSpeed : _tuning.WalkSpeed;
 
-            _speed = Mathf.Lerp(_speed, target, deltaTime * _speedChangeRate);
+            _speed = Mathf.Lerp(_speed, target, deltaTime * _tuning.SpeedChangeRate);
 
             if (_controller.isGrounded && _fallSpeed < 0f)
             {
                 _fallSpeed = GROUNDED_FALL_SPEED;
             }
 
-            /// Нажатие копится кадрами, а тратится тиком: тик реже кадра, и без защёлки
-            /// короткое нажатие пробела попадало бы между тиками и пропадало.
-            if (_jumpPending && _controller.isGrounded)
+            if (frame.Jump && _controller.isGrounded)
             {
-                _fallSpeed = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+                _fallSpeed = Mathf.Sqrt(_tuning.JumpHeight * -2f * _tuning.Gravity);
             }
 
-            _jumpPending = false;
-            _fallSpeed += _gravity * deltaTime;
-
+            _fallSpeed += _tuning.Gravity * deltaTime;
             _controller.Move((wish * _speed + Vector3.up * _fallSpeed) * deltaTime);
-        }
-
-        private void Update()
-        {
-            /// Мышь отдаёт смещение за кадр, а стик геймпада — постоянное отклонение,
-            /// и его приходится умножать на время кадра, иначе взгляд улетает. StarterAssets
-            /// различает их по схеме управления PlayerInput, у нас схемы нет — спрашиваем
-            /// устройство, с которого пришло само действие.
-            var scale = _lookAction.action.activeControl?.device is Gamepad ? Time.deltaTime : 1f;
-            var look = _lookAction.action.ReadValue<Vector2>() * (_lookSensitivity * scale);
-
-            _yaw += look.x;
-            _pitch = Mathf.Clamp(_pitch - look.y, _bottomClamp, _topClamp);
-
-            if (_jumpAction.action.WasPressedThisFrame()) _jumpPending = true;
-        }
-
-        /// Взгляд обновляется кадром, а корпус — тиком, и это не небрежность: тик у Fusion
-        /// 30 Гц, и поворот головы на такой частоте читается как подтормаживание мыши.
-        /// Камера висит на дочернем объекте, сетевое состояние её не трогает, поэтому
-        /// смотреть можно сразу, а корпус подтягивается следующим тиком.
-        ///
-        /// Именно LateUpdate, а не Update: мировой поворот дочернего объекта считается
-        /// от родителя, а родителя в этом же кадре ещё двигает Fusion — вся его работа,
-        /// включая интерполяцию, происходит внутри NetworkRunner.Update.
-        private void LateUpdate()
-        {
-            if (_view != null) _view.rotation = Quaternion.Euler(_pitch, _yaw, 0f);
         }
     }
 }

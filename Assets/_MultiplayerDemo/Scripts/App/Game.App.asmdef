@@ -4,6 +4,7 @@
     "references": [
         "Game.Core",
         "Game.UI",
+        "Game.Gameplay",
         "R3.Unity",
         "VContainer",
         "UniTask"

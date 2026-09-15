@@ -182,6 +182,19 @@ namespace Game.Core.Tests
         {
         }
 
+        private sealed class FakeGate : IInputGate
+        {
+            private int _blocks;
+
+            public bool IsBlocked => _blocks > 0;
+
+            public IDisposable Block()
+            {
+                _blocks++;
+                return Disposable.Create(() => _blocks--);
+            }
+        }
+
         private sealed class FakeHud : IHudMessages
         {
             public string Last;
@@ -243,6 +256,7 @@ namespace Game.Core.Tests
             public readonly FakeLobbyView View;
             public readonly FakePauseView Pause;
             public readonly FakeStackFlow StackFlow;
+            public readonly FakeGate Gate;
             public readonly DemoConfig Config;
             public readonly NetworkStackDefinition Stack;
             public readonly ArenaDefinition Arena;
@@ -259,12 +273,13 @@ namespace Game.Core.Tests
                 View = new FakeLobbyView();
                 Pause = new FakePauseView();
                 StackFlow = new FakeStackFlow();
+                Gate = new FakeGate();
                 Config = ScriptableObject.CreateInstance<DemoConfig>();
                 Stack = ScriptableObject.CreateInstance<FakeStack>();
                 Arena = ScriptableObject.CreateInstance<ArenaDefinition>();
                 SecondArena = ScriptableObject.CreateInstance<ArenaDefinition>();
                 Presenter = new LobbyPresenter(Browser, Session, Spawner, ArenaFlow, StackFlow, Hud, View,
-                    Pause, Config, Stack, new[] { Arena, SecondArena });
+                    Pause, Config, Stack, new[] { Arena, SecondArena }, Gate);
             }
         }
 
@@ -417,6 +432,34 @@ namespace Game.Core.Tests
             rig.Pause.ClickResume();
 
             Assert.IsFalse(rig.Pause.Visible);
+            Assert.IsTrue(rig.Pause.CursorCapturedOnHide);
+        }
+
+        /// Пока пауза открыта, персонаж обязан стоять: контроллер двигается сам,
+        /// в своём Update, и остановить его можно только пустым кадром ввода.
+        [Test]
+        public void PauseBlocksGameplayInputUntilClosed()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+            rig.View.ClickHost("Коля");
+
+            rig.Pause.PressCancel();
+            Assert.IsTrue(rig.Gate.IsBlocked);
+
+            rig.Pause.ClickResume();
+            Assert.IsFalse(rig.Gate.IsBlocked);
+        }
+
+        /// StarterAssetsInputs больше не захватывает курсор за нас: в матче это делает презентер.
+        [Test]
+        public void EnteringMatchCapturesCursor()
+        {
+            var rig = new Rig();
+            rig.Presenter.Start();
+
+            rig.View.ClickHost("Коля");
+
             Assert.IsTrue(rig.Pause.CursorCapturedOnHide);
         }
 

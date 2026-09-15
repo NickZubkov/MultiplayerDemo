@@ -1,4 +1,5 @@
 using Game.Core;
+using Game.Gameplay;
 using Game.UI;
 using UnityEngine;
 using VContainer;
@@ -16,6 +17,8 @@ namespace Game.App
         [SerializeField] private PauseView _pauseView;
         [SerializeField] private NetworkStackDefinition[] _stacks;
         [SerializeField] private ArenaDefinition[] _arenas;
+        [SerializeField] private PlayerInputBindings _inputBindings;
+        [SerializeField] private AvatarControllerProvider _controllerProvider;
 
         /// Виды будим до сборки графа. Панель, выключенную в сцене галочкой, Unity
         /// обходит стороной: Awake у её компонентов не зовётся вовсе, и вид остаётся без
@@ -41,6 +44,13 @@ namespace Game.App
             builder.RegisterComponent<IPauseView>(_pauseView);
             builder.RegisterInstance(_stacks);
             builder.RegisterInstance(_arenas);
+            builder.RegisterInstance(_inputBindings);
+
+            /// Провайдер регистрируется базовым типом, как описание стека: потребителю
+            /// нужен контракт, а не конкретный ассет.
+            builder.RegisterInstance<AvatarControllerProvider>(_controllerProvider);
+            builder.Register<InputGate>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ProjectActionsInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             /// AsImplementedInterfaces тут не нужен: RegisterEntryPoint делает его сам,
             /// а повторный контракт роняет сборку конфликтом типов реализации.
             builder.RegisterEntryPoint<StackFlow>().AsSelf();

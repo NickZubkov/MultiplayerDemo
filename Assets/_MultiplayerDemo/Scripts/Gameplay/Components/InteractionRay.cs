@@ -1,7 +1,7 @@
 using Game.Core;
 using R3;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using VContainer;
 
 namespace Game.Gameplay
 {
@@ -12,12 +12,12 @@ namespace Game.Gameplay
     {
         [SerializeField] private Camera _view;
         [SerializeField] private LayerMask _interactable;
-        [SerializeField] private InputActionReference _interactAction;
 
         private readonly Subject<Collider> _pickRequested = new();
         private readonly Subject<Unit> _dropRequested = new();
 
         private PlayerRig _rig;
+        private IPlayerInput _input;
 
         public Observable<Collider> PickRequested => _pickRequested;
         public Observable<Unit> DropRequested => _dropRequested;
@@ -27,11 +27,10 @@ namespace Game.Gameplay
 
         public Transform View => _view.transform;
 
+        [Inject]
+        public void Construct(IPlayerInput input) => _input = input;
+
         private void Awake() => _rig = GetComponent<PlayerRig>();
-
-        private void OnEnable() => _interactAction.action.performed += OnInteractPerformed;
-
-        private void OnDisable() => _interactAction.action.performed -= OnInteractPerformed;
 
         private void OnDestroy()
         {
@@ -39,13 +38,9 @@ namespace Game.Gameplay
             _dropRequested.Dispose();
         }
 
-        /// Имя не случайное: PlayerInput на этом же объекте работает в режиме Send Messages
-        /// и на каждое действие рассылает сообщение «On + имя действия». Обработчик с именем
-        /// OnInteract Unity нашла бы по имени, не подобрала бы сигнатуру под InputValue
-        /// и бросала бы MissingMethodException на каждое нажатие.
-        private void OnInteractPerformed(InputAction.CallbackContext _)
+        private void Update()
         {
-            if (!_rig.IsLocal) return;
+            if (!_rig.IsLocal || _input == null || !_input.Current.Interact) return;
 
             if (HandsBusy)
             {

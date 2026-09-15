@@ -4,9 +4,11 @@
     "references": [
         "Game.Core",
         "Game.App",
+        "Game.Gameplay",
         "R3.Unity",
         "VContainer",
         "UniTask",
+        "Unity.InputSystem",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -5,8 +5,7 @@
         "Game.Core",
         "R3.Unity",
         "VContainer",
-        "Unity.InputSystem",
-        "Unity.Cinemachine"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

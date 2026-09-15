@@ -59,7 +59,7 @@ namespace Game.Net.Ngo
 
             var moved = HorizontalDistance(transform.position, _lastAccepted);
 
-            if (SpeedGuard.IsPlausible(moved, elapsed, _config.MaxPlayerSpeed, _config.SpeedTolerance))
+            if (SpeedGuard.IsPlausible(moved, elapsed, _config.SprintSpeed, _config.SpeedTolerance))
             {
                 _lastAccepted = transform.position;
                 return;

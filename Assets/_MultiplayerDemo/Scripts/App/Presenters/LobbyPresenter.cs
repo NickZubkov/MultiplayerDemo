@@ -31,8 +31,13 @@ namespace Game.App
         private readonly DemoConfig _config;
         private readonly NetworkStackDefinition _stack;
         private readonly ArenaDefinition[] _arenas;
+        private readonly IInputGate _gate;
 
         private DisposableBag _subscriptions;
+
+        /// Блокировка ввода, взятая на время паузы: пока она жива, источник отдаёт
+        /// пустой кадр и персонаж стоит.
+        private IDisposable _pauseBlock;
 
         /// Отмеченный уровень — состояние экрана, а не разделяемое состояние: он нужен
         /// только хосту и только до старта. Клиент берёт уровень из строки хоста.
@@ -45,7 +50,7 @@ namespace Game.App
 
         public LobbyPresenter(IHostBrowser browser, ISessionControl session, IWorldSpawner spawner,
             IArenaLoader arena, IStackFlow stackFlow, IHudMessages hud, ILobbyView view, IPauseView pause,
-            DemoConfig config, NetworkStackDefinition stack, ArenaDefinition[] arenas)
+            DemoConfig config, NetworkStackDefinition stack, ArenaDefinition[] arenas, IInputGate gate)
         {
             _browser = browser;
             _session = session;
@@ -58,6 +63,7 @@ namespace Game.App
             _config = config;
             _stack = stack;
             _arenas = arenas;
+            _gate = gate;
             _selectedArena = arenas.Length > 0 ? arenas[0] : null;
         }
 
@@ -125,6 +131,9 @@ namespace Game.App
         {
             _subscriptions.Dispose();
             _view.Hide();
+
+            _pauseBlock?.Dispose();
+            _pauseBlock = null;
 
             /// Курсор не захватываем: впереди выбор стека, там он нужен игроку.
             _pause.Hide(false);
@@ -197,15 +206,20 @@ namespace Game.App
         /// Панель лобби в сцене Bootstrap выключена и включается отсюда: в арене она
         /// перекрывала бы обзор, а после отказа обязана вернуться — иначе игрок
         /// останется смотреть на пустую сцену без единой кнопки.
+        ///
+        /// Курсор до задачи 15.7 ведёт этот презентер: StarterAssetsInputs, который раньше
+        /// захватывал его в матче, теперь стоит только у одного из двух провайдеров.
         private void ShowLobbyOutOfGame(SessionPhase phase)
         {
             if (phase is SessionPhase.Hosting or SessionPhase.Connected)
             {
                 _view.Hide();
+                _pause.Hide(true);
             }
             else
             {
                 _view.Show();
+                _pause.Hide(false);
             }
         }
 
@@ -221,6 +235,7 @@ namespace Game.App
             }
 
             _paused = true;
+            _pauseBlock = _gate.Block();
             _pause.Show();
         }
 
@@ -229,6 +244,8 @@ namespace Game.App
             if (!_paused) return;
 
             _paused = false;
+            _pauseBlock?.Dispose();
+            _pauseBlock = null;
             _pause.Hide(captureCursor);
         }
 
