@@ -78,7 +78,7 @@ namespace Game.Net.Ngo
 
             var denial = PickupRules.Evaluate(query);
 
-            if (denial == PickupDenial.None && _state.TryHold(requester))
+            if (denial == PickupDenial.None && _state.TryHold(new PlayerId((int)requester)))
             {
                 NetworkObject.ChangeOwnership(requester);
                 _holder.Value = requester;
@@ -95,7 +95,7 @@ namespace Game.Net.Ngo
         public void RequestDropRpc(Vector3 impulse, RpcParams rpcParams = default)
         {
             var requester = rpcParams.Receive.SenderClientId;
-            if (!_state.TryRelease(requester)) return;
+            if (!_state.TryRelease(new PlayerId((int)requester))) return;
 
             NetworkObject.RemoveOwnership();
             _holder.Value = NO_HOLDER;
@@ -112,7 +112,7 @@ namespace Game.Net.Ngo
         {
             if (_holder.Value != clientId) return;
 
-            _state.TryRelease(clientId);
+            _state.TryRelease(new PlayerId((int)clientId));
             _holder.Value = NO_HOLDER;
         }
 

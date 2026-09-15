@@ -88,7 +88,7 @@ namespace Game.Net.Mirror
 
             var denial = PickupRules.Evaluate(query);
 
-            if (denial == PickupDenial.None && requester != NO_HOLDER && _state.TryHold(requester))
+            if (denial == PickupDenial.None && requester != NO_HOLDER && _state.TryHold(new PlayerId((int)requester)))
             {
                 _holder = requester;
                 return;
@@ -103,7 +103,7 @@ namespace Game.Net.Mirror
         public void CmdRequestDrop(Vector3 impulse, NetworkConnectionToClient sender = null)
         {
             if (sender?.identity == null) return;
-            if (!_state.TryRelease(sender.identity.netId)) return;
+            if (!_state.TryRelease(new PlayerId((int)sender.identity.netId))) return;
 
             /// Присвоение SyncVar на хосте синхронно зовёт хук (NetworkBehaviour.GeneratedSyncVarSetter
             /// делает это при NetworkServer.activeHost), то есть к следующей строке тело уже
@@ -121,7 +121,7 @@ namespace Game.Net.Mirror
         {
             if (_holder != holder) return;
 
-            _state.TryRelease(holder);
+            _state.TryRelease(new PlayerId((int)holder));
             _holder = NO_HOLDER;
         }
 
