@@ -10,10 +10,12 @@ namespace Game.Net.Local
     public sealed class LocalScope : LifetimeScope
     {
         [SerializeField] private LocalStackDefinition _stack;
+        [SerializeField] private EntityCatalog _entities;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance<NetworkStackDefinition>(_stack);
+            builder.RegisterInstance(_entities);
             builder.Register<LocalSession>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmptyDirectory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<LocalStack>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

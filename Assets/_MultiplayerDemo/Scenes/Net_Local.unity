@@ -153,6 +153,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _stack: {fileID: 11400000, guid: 0d1fd726ef964e842bec0c616aea617b, type: 2}
+  _entities: {fileID: 11400000, guid: e08002d6089e0ea44b03aa63727bcbd9, type: 2}
 --- !u!4 &66933315
 Transform:
   m_ObjectHideFlags: 0

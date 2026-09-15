@@ -12,5 +12,9 @@ namespace Game.Net
         public IReadOnlyList<Placement> Placements { get; }
 
         public Pose AvatarPose(PlayerId player);
+
+        /// Носитель сценовой сущности, приехавший на удалённую машину, находит здесь свою копию
+        /// объекта: сцену каждая машина грузит сама, а идентификатор в ней один и тот же.
+        public bool TryGetSceneEntity(NetEntityId id, out NetEntity entity);
     }
 }

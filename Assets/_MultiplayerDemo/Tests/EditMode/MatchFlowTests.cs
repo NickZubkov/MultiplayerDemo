@@ -23,6 +23,12 @@ namespace Game.Tests
             public IReadOnlyList<Placement> Placements { get; } = Array.Empty<Placement>();
 
             public Pose AvatarPose(PlayerId player) => Pose.identity;
+
+            public bool TryGetSceneEntity(NetEntityId id, out NetEntity entity)
+            {
+                entity = null;
+                return false;
+            }
         }
 
         private sealed class FakeArena : IArenaLoader

@@ -4,32 +4,24 @@ using UnityEngine;
 
 namespace Game.Gameplay
 {
-    /// Живёт в сцене арены: собирает маркеры при загрузке и отдаёт их как ISpawnPointRegistry.
-    /// Статические списки в маркерах не нужны.
-    ///
-    /// Регистрацией занимается ArenaScope, а не этот класс: он только про точки,
-    /// поэтому и называется по содержимому, а не по роли в контейнере.
-    public sealed class ArenaSpawnPoints : MonoBehaviour, ISpawnPointRegistry
+    /// Точки спавна игроков своей сцены. Ящиков здесь больше нет: они стоят в сцене
+    /// размещениями (NetEntity), а маркеров под них не нужно.
+    public sealed class ArenaSpawnPoints : MonoBehaviour
     {
         private readonly List<SpawnPoint> _players = new();
-        private readonly List<SpawnPoint> _items = new();
 
         public IReadOnlyList<SpawnPoint> Players => _players;
-        public IReadOnlyList<SpawnPoint> Items => _items;
 
+        /// Обход корней своей сцены, включая выключенные объекты. FindObjectsByType искал по
+        /// всем загруженным сценам и пропускал выключенные: при двух аренах разом точки
+        /// перемешались бы (И-24).
         private void Awake()
         {
-            foreach (var marker in FindObjectsByType<SpawnPointMarker>(FindObjectsSortMode.None))
+            foreach (var root in gameObject.scene.GetRootGameObjects())
             {
-                var point = new SpawnPoint(marker.transform.position, marker.transform.rotation);
-
-                if (marker.Kind == SpawnKind.Player)
+                foreach (var marker in root.GetComponentsInChildren<SpawnPointMarker>(true))
                 {
-                    _players.Add(point);
-                }
-                else
-                {
-                    _items.Add(point);
+                    _players.Add(new SpawnPoint(marker.transform.position, marker.transform.rotation));
                 }
             }
         }
