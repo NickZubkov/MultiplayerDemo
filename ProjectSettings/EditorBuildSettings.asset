@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_MultiplayerDemo/Scenes/Net_Fusion.unity
     guid: b0c73af065d4fcd44b74c92677210b74
+  - enabled: 1
+    path: Assets/_MultiplayerDemo/Scenes/Net_Local.unity
+    guid: 5425215cb9b500a4c874768e9c413d79
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

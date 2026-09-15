@@ -6,7 +6,8 @@ namespace Game.Tests
 {
     public sealed class HostRegistryTests
     {
-        private static HostEntry Host(string token, int players = 1) => new HostEntry("Коля", players, 4, "ngo", token, "box");
+        /// Реестру важен только JoinToken — метаданные записи он не читает.
+        private static HostEntry Host(string token, int players = 1) => new HostEntry("Коля", players, 4, token, null);
 
         [Test]
         public void ReportedHostBecomesVisible()

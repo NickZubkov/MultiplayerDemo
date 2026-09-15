@@ -1267,6 +1267,12 @@ MonoBehaviour:
   _arenaListRoot: {fileID: 326772804}
   _emptyListHint: {fileID: 1903386900}
   _manualHint: {fileID: 1851443072}
+  _hostButtonLabel: {fileID: 1558279915}
+  _joinOnly:
+  - {fileID: 1765176006}
+  - {fileID: 1359813736}
+  - {fileID: 1851443070}
+  - {fileID: 298076513}
 --- !u!1 &499297199
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,6 +1838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game.UI::Game.UI.PauseView
   _resumeButton: {fileID: 1394288732}
   _exitButton: {fileID: 58390871}
+  _cancel: {fileID: -1967631576421560919, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!224 &969835598
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2051,9 +2058,7 @@ MonoBehaviour:
   _hudView: {fileID: 1759706478}
   _pauseView: {fileID: 969835597}
   _stacks:
-  - {fileID: 11400000, guid: 0d0a2e405b82e924da17567d4981b903, type: 2}
-  - {fileID: 11400000, guid: 2947feb0c60d0c74885cf89b0bb921e0, type: 2}
-  - {fileID: 11400000, guid: 6878c7ae91bdd8648858c5e93417d0c9, type: 2}
+  - {fileID: 11400000, guid: 0d1fd726ef964e842bec0c616aea617b, type: 2}
   _arenas:
   - {fileID: 11400000, guid: d9df38f757fd2774ca80d7d2a25fb5fb, type: 2}
   - {fileID: 11400000, guid: 166a4eb93568cfe43a91095bceb4f862, type: 2}

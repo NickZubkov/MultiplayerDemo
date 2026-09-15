@@ -10,6 +10,10 @@ namespace Game.Core
     [CreateAssetMenu(menuName = "Демка/Арена", fileName = "Arena_")]
     public sealed class ArenaDefinition : ScriptableObject
     {
+        /// Ключ уровня в метаданных сессии. Константа игры: сеть везёт словарь и не знает,
+        /// что в нём уровень.
+        public const string METADATA_KEY = "arena";
+
         [SerializeField] private string _displayName = "Коробка";
         [SerializeField] private string _arenaId = "box";
         [SerializeField] private string _sceneName = "Arena";

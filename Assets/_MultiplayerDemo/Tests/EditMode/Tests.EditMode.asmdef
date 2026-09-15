@@ -7,6 +7,7 @@
         "Game.Net.Local",
         "Game.App",
         "Game.Gameplay",
+        "Game.UI",
         "R3.Unity",
         "VContainer",
         "UniTask",

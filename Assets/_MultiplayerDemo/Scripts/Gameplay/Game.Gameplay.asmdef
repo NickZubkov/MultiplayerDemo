@@ -3,6 +3,7 @@
     "rootNamespace": "Game.Gameplay",
     "references": [
         "Game.Core",
+        "Game.Net",
         "R3.Unity",
         "VContainer",
         "Unity.InputSystem"

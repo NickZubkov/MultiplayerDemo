@@ -39,5 +39,19 @@ namespace Game.Tests
 
             Assert.AreSame(arriving, slot.Current.CurrentValue);
         }
+
+        /// При выходе из Play Mode BootstrapScope может закрыться раньше scope стека,
+        /// и тот уходит из уже закрытого гнезда. Закрытое гнездо молчит, а не бросает.
+        [Test]
+        public void ClosedSlotIgnoresLateStackMoves()
+        {
+            var slot = new NetworkSlot();
+            var stack = new FakeStack();
+            slot.Attach(stack);
+            slot.Dispose();
+
+            Assert.DoesNotThrow(() => slot.Detach(stack));
+            Assert.DoesNotThrow(() => slot.Attach(stack));
+        }
     }
 }

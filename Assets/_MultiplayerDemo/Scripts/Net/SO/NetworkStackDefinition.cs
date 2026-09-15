@@ -15,9 +15,16 @@ namespace Game.Net
         /// Лобби показывает текст как есть и про стеки по-прежнему ничего не знает.
         [SerializeField] private string _manualEntryHint = "Адрес хоста (ip:port)";
 
+        /// Лобби читает данные и не спрашивает, что это за стек: у «Без сети» подключаться
+        /// не к кому, и кнопка хоста там — «Играть» (спека § 8.3).
+        [SerializeField] private bool _canJoin = true;
+        [SerializeField] private string _hostButtonLabel = "Поднять хост";
+
         public string DisplayName => _displayName;
         public string StackId => _stackId;
         public string ManagerScene => _managerScene;
         public string ManualEntryHint => _manualEntryHint;
+        public bool CanJoin => _canJoin;
+        public string HostButtonLabel => _hostButtonLabel;
     }
 }

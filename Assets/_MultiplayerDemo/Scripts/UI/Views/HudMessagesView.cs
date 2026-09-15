@@ -1,10 +1,9 @@
-using Game.Core;
 using TMPro;
 using UnityEngine;
 
 namespace Game.UI
 {
-    public sealed class HudMessagesView : MonoBehaviour, IHudMessages
+    public sealed class HudMessagesView : MonoBehaviour, IHudView
     {
         [SerializeField] private TMP_Text _label;
         [SerializeField] private float _holdSeconds = 3f;
@@ -12,26 +11,22 @@ namespace Game.UI
         private float _hideAt;
 
         /// Метку гасим кодом, а не галочкой в сцене: после вёрстки она нередко остаётся
-        /// включённой, и игрок увидел бы в HUD текст-заглушку.
+        /// включённой, и игрок увидел бы текст-заглушку.
         private void Awake() => _label.gameObject.SetActive(false);
 
-        /// Сообщения приходят из сетевых сервисов, а те живут в другой сцене и завершают
-        /// свои операции когда придётся — в том числе в момент, когда Unity уже снёс этот
-        /// HUD. Порядок разрушения между сценами не обещан никем, поэтому вид обязан
-        /// пережить обращение к себе после смерти, а не полагаться на дисциплину звонящих.
-        public void Show(string message)
-        {
-            if (_label == null) return;
+        public void Show() => gameObject.SetActive(true);
 
-            _label.text = message;
+        public void Hide() => gameObject.SetActive(false);
+
+        public void ShowMessage(string text)
+        {
+            _label.text = text;
             _label.gameObject.SetActive(true);
             _hideAt = Time.time + _holdSeconds;
         }
 
         private void Update()
         {
-            if (_label == null) return;
-
             if (_label.gameObject.activeSelf && Time.time >= _hideAt)
             {
                 _label.gameObject.SetActive(false);

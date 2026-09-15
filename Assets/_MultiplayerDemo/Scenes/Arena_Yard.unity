@@ -1069,7 +1069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.ArenaScope
   parentReference:
-    TypeName: 
+    TypeName: Game.App.BootstrapScope
   autoRun: 1
   autoInjectGameObjects: []
 --- !u!4 &1335656110

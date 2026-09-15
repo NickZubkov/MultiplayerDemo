@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Game.Core;
 using Game.Net;
 using R3;
 using TMPro;
@@ -18,9 +17,9 @@ namespace Game.UI
         public Observable<NetworkStackDefinition> StackChosen => _chosen;
 
         /// Шаблон кнопки гасим кодом, а не галочкой в сцене: оставленный включённым, он
-        /// встал бы в список лишней кнопкой без стека. Сам экран здесь не прячем, в
-        /// отличие от лобби и паузы: он и так первый на очереди, а презентер показывает
-        /// его лишь в фазе Startup — спрятанный, он подарил бы игре пустой первый кадр.
+        /// встал бы в список лишней кнопкой без стека. Сам экран здесь не трогаем:
+        /// начальное состояние задаёт UiService, а презентер показывает этот экран
+        /// в фазе SelectingStack.
         private void Awake() => _buttonTemplate.gameObject.SetActive(false);
 
         private void OnDestroy() => _chosen.Dispose();

@@ -5,6 +5,8 @@
         "Game.Core",
         "Game.Net",
         "R3.Unity",
+        "UniTask",
+        "VContainer",
         "Unity.InputSystem",
         "UnityEngine.UI",
         "Unity.TextMeshPro"
