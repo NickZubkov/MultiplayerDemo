@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Core
+namespace Game.Net
 {
     /// Описание стека. Наследники живут в Game.Net.*, а Game.App работает только
     /// с базовым типом — поэтому сборка приложения не ссылается ни на один сетевой пакет.

@@ -1,6 +1,8 @@
+using Game.Core;
+using Game.Net;
 using NUnit.Framework;
 
-namespace Game.Core.Tests
+namespace Game.Tests
 {
     public sealed class HostRegistryTests
     {

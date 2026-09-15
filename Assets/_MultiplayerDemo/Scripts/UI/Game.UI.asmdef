@@ -3,6 +3,7 @@
     "rootNamespace": "Game.UI",
     "references": [
         "Game.Core",
+        "Game.Net",
         "R3.Unity",
         "Unity.InputSystem",
         "UnityEngine.UI",

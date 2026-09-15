@@ -1,7 +1,7 @@
 using Game.Gameplay;
 using NUnit.Framework;
 
-namespace Game.Core.Tests
+namespace Game.Tests
 {
     /// Токены, а не флаг: два модальных экрана подряд не должны отпускать ввод друг за друга.
     public sealed class InputGateTests

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Game.Core.Tests
+namespace Game.Tests
 {
     public sealed class SanityTests
     {

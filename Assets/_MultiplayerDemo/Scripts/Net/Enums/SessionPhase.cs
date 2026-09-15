@@ -1,4 +1,4 @@
-namespace Game.Core
+namespace Game.Net
 {
     public enum SessionPhase
     {

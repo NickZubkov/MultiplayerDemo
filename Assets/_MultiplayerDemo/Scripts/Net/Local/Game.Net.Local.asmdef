@@ -1,0 +1,19 @@
+{
+    "name": "Game.Net.Local",
+    "rootNamespace": "Game.Net.Local",
+    "references": [
+        "Game.Net",
+        "R3.Unity",
+        "UniTask",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

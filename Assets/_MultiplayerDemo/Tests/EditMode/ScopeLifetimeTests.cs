@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using VContainer;
 
-namespace Game.Core.Tests
+namespace Game.Tests
 {
     /// Регрессия на ловушку, из-за которой в аренах перестали появляться ящики.
     /// ArenaScope резолвит IWorldSpawner в собственном контейнере, и при Lifetime.Scoped

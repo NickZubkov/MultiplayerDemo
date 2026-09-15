@@ -1,4 +1,4 @@
-namespace Game.Core
+namespace Game.Net
 {
     /// JoinToken непрозрачен: для LAN это "ip:port", для Fusion — имя сессии.
     /// UI отдаёт токен обратно тому адаптеру, который выдал запись, и не разбирает его.

@@ -1,8 +1,10 @@
 {
-    "name": "Tests.Core",
-    "rootNamespace": "Game.Core.Tests",
+    "name": "Tests.EditMode",
+    "rootNamespace": "Game.Tests",
     "references": [
         "Game.Core",
+        "Game.Net",
+        "Game.Net.Local",
         "Game.App",
         "Game.Gameplay",
         "R3.Unity",

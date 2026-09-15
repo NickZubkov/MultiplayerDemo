@@ -3,6 +3,7 @@
     "rootNamespace": "Game.Net.Ngo",
     "references": [
         "Game.Core",
+        "Game.Net",
         "Game.Gameplay",
         "Game.App",
         "R3.Unity",

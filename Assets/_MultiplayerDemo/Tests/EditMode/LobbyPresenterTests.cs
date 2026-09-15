@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Game.App;
+using Game.Core;
+using Game.Net;
 using NUnit.Framework;
 using R3;
 using UnityEngine;
 
-namespace Game.Core.Tests
+namespace Game.Tests
 {
     /// Ни сцены, ни сети: всё, что презентер трогает, спрятано за портами.
     /// Общий журнал вызовов у подставок нужен ради теста порядка — именно порядок

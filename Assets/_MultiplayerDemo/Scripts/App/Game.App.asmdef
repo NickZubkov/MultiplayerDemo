@@ -3,6 +3,7 @@
     "rootNamespace": "Game.App",
     "references": [
         "Game.Core",
+        "Game.Net",
         "Game.UI",
         "Game.Gameplay",
         "R3.Unity",
