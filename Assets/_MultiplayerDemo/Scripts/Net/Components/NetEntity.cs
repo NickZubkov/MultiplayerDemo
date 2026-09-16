@@ -27,7 +27,16 @@ namespace Game.Net
 
         private void OnDestroy() => _bound.Dispose();
 
-        public void Bind(INetEntity entity) => _bound.Value = entity;
+        /// Разрушенная метка молчит, а не бросает. Носитель снимает привязку в конце жизни
+        /// объекта, но порядок разрушения компонентов Unity не обещает: у NGO OnNetworkDespawn
+        /// приходит из OnDestroy сетевого объекта — то есть уже после того, как эта метка
+        /// похоронила своё свойство. Слушателей у неё к этому моменту всё равно нет.
+        public void Bind(INetEntity entity)
+        {
+            if (_bound.IsDisposed) return;
+
+            _bound.Value = entity;
+        }
 
         /// Путь сцены проверяется, а не только IsValid: в режиме префаба объект тоже живёт
         /// в валидной, но временной сцене, и идентификатор уехал бы в сам префаб.

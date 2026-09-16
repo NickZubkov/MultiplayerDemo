@@ -3,8 +3,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Game.Core
+namespace Game.Net.Ngo
 {
+    /// Транспорт маяка NGO, а не общий формат LAN: у Mirror свой поиск из коробки, у Fusion
+    /// маяка нет вовсе (И-4). Поэтому сокет и кодек живут в сборке того стека, который их
+    /// единственный и зовёт.
+    ///
     /// ExclusiveAddressUse = false обязателен: без него второй инстанс на том же ПК
     /// не займёт порт — то есть ровно наш сценарий «два окна на одной машине».
     public sealed class LanBeaconSocket : IDisposable

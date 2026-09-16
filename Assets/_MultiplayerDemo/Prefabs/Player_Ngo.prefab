@@ -64,22 +64,8 @@ PrefabInstance:
       addedObject: {fileID: 8788882050405067711}
     - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1796171819741422553}
-    - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7829973711017236101}
+      addedObject: {fileID: 864172711916101716}
   m_SourcePrefab: {fileID: 100100000, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
---- !u!114 &3382959874103177475 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1320685494205604677, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 4370378818715849286}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb24d985f99976b49893a003bf9094d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.HoldPoint
 --- !u!1 &4545786992028653958 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
@@ -158,7 +144,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1796171819741422553
+--- !u!114 &864172711916101716
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,33 +153,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4545786992028653958}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43d29cb7c3edb2f488f4c0f32c6ca187, type: 3}
+  m_Script: {fileID: 11500000, guid: ac264cfa408cb77499fd62a072fff4e6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoPlayer
+  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoCarrier
   ShowTopMostFoldoutHeaderGroup: 1
-  _ray: {fileID: 8209920942533110600}
-  _holdPoint: {fileID: 3382959874103177475}
---- !u!114 &7829973711017236101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4545786992028653958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecdf36c82f5c78543830ea8779bb1735, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoSpeedGuard
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &8209920942533110600 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5569206681219037454, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 4370378818715849286}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4545786992028653958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f35bf2cf773e2744b3c22e9dd3e9bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.InteractionRay

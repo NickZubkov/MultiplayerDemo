@@ -64,7 +64,7 @@ PrefabInstance:
       addedObject: {fileID: 5901557092936698543}
     - targetCorrespondingSourceObject: {fileID: 5272032206444132188, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1450122842217903835}
+      addedObject: {fileID: 8971204535963461954}
   m_SourcePrefab: {fileID: 100100000, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
 --- !u!1 &1688181083647388690 stripped
 GameObject:
@@ -144,7 +144,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 1
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1450122842217903835
+--- !u!114 &8971204535963461954
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1688181083647388690}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1954da80d7dd5443b1d7ee48912a6ce, type: 3}
+  m_Script: {fileID: 11500000, guid: ac264cfa408cb77499fd62a072fff4e6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoItem
+  m_EditorClassIdentifier: Game.Net.Ngo::Game.Net.Ngo.NgoCarrier
   ShowTopMostFoldoutHeaderGroup: 1

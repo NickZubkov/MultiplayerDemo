@@ -261,8 +261,8 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _stack: {fileID: 11400000, guid: 0d0a2e405b82e924da17567d4981b903, type: 2}
   _manager: {fileID: 691994777}
-  _playerPrefab: {fileID: 4545786992028653958, guid: de5b9ec631a6cf345ae88f5e35ac427c, type: 3}
-  _cratePrefab: {fileID: 1688181083647388690, guid: a0ec4c052a1f6f74da7a5b52a2fb4b09, type: 3}
+  _entities: {fileID: 11400000, guid: 451fa49e172be0a45a3bd4982e0ed976, type: 2}
+  _sceneCarrier: {fileID: 4912297729211216708, guid: 8405f8b0b0551334b92bd7ad382aedae, type: 3}
 --- !u!4 &1228098349
 Transform:
   m_ObjectHideFlags: 0

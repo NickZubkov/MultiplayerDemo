@@ -1,4 +1,3 @@
-using Game.Core;
 using Game.Net;
 using NUnit.Framework;
 

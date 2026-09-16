@@ -2,10 +2,7 @@
     "name": "Game.Net.Ngo",
     "rootNamespace": "Game.Net.Ngo",
     "references": [
-        "Game.Core",
         "Game.Net",
-        "Game.Gameplay",
-        "Game.App",
         "R3.Unity",
         "UniTask",
         "VContainer",
@@ -18,9 +15,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "TARGET_ARCH_PENDING"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

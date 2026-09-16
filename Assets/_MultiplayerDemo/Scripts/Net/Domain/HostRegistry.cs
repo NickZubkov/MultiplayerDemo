@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using Game.Net;
 
-namespace Game.Core
+namespace Game.Net
 {
     /// Ключ — JoinToken: один хост остаётся одной строкой, сколько бы маяков ни прислал.
+    /// Живёт в Game.Net, а не в каталоге одного стека: реестр с TTL нужен каждому, кто ищет
+    /// хостов сам, — сейчас это NGO, в задаче 15.10 к нему добавится Mirror.
     public sealed class HostRegistry
     {
         public const double TTL = 3.0;

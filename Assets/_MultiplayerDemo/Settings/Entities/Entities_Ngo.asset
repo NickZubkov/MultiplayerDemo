@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff0384f337a4ee84881d68da3dbc707c, type: 3}
+  m_Name: Entities_Ngo
+  m_EditorClassIdentifier: Game.Net::Game.Net.EntityCatalog
+  _entries:
+  - _entityType: player
+    _prefab: {fileID: 4545786992028653958, guid: de5b9ec631a6cf345ae88f5e35ac427c, type: 3}
+  - _entityType: crate
+    _prefab: {fileID: 1688181083647388690, guid: a0ec4c052a1f6f74da7a5b52a2fb4b09, type: 3}
