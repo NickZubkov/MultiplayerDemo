@@ -35,10 +35,24 @@ namespace Game.Net.Fusion
             var handler = Object.FindAnyObjectByType<ConnectionHandler>();
             var summary = handler == null ? null : handler.Client?.SummaryToCache;
 
-            if (string.IsNullOrEmpty(summary)) return;
+            if (!IsUsable(summary)) return;
 
             PlayerPrefs.SetString(KEY, summary);
             PlayerPrefs.Save();
+        }
+
+        /// Сводка годится только с замером: `RegionHandler.SummaryToCache` отдаёт
+        /// «регион;пинг;список», пока лучший регион известен, и голый список регионов, когда
+        /// нет. Голый список `PingMinimumOfRegions` отвергает по числу полей и пингует все
+        /// регионы заново — то есть кэш из него не ускоряет ничего, зато затирает хорошую
+        /// сводку. Так в PlayerPrefs и осела строка «asia,au,cae,…», с которой каждый старт
+        /// хоста заново мерил все регионы (ручной прогон 15.11).
+        private static bool IsUsable(string summary)
+        {
+            if (string.IsNullOrEmpty(summary)) return false;
+
+            var parts = summary.Split(';');
+            return parts.Length >= 3 && !string.IsNullOrEmpty(parts[0]) && int.TryParse(parts[1], out _);
         }
     }
 }

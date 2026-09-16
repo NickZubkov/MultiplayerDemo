@@ -86,6 +86,23 @@ namespace Game.Tests
             Assert.AreEqual("No match found", publisher.State.CurrentValue.Reason);
         }
 
+        /// Ровно то, что всплыло на ручном прогоне Fusion: выход из матча кладёт в очередь Idle,
+        /// следом уходит сцена стека вместе с сессией, и кадром позже отложенная доставка
+        /// просыпалась над закрытым свойством — ObjectDisposedException в консоли.
+        [Test]
+        public void FlushAfterDisposeIsSilent()
+        {
+            var frames = new FakeFrameProvider();
+            var publisher = new SessionStatePublisher(frames);
+            publisher.Begin(SessionPhase.Hosting);
+            frames.Advance();
+
+            publisher.End();
+            publisher.Dispose();
+
+            Assert.DoesNotThrow(() => frames.Advance());
+        }
+
         [Test]
         public void CancellationIsNotFailure()
         {

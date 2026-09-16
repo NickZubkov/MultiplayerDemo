@@ -1,7 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Fusion;
-using R3;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -20,13 +19,9 @@ namespace Game.Net.Fusion
     {
         private readonly IObjectResolver _resolver;
         private readonly GameObject _prefab;
-        private readonly Subject<Unit> _recycled = new();
 
         private NetworkRunner _runner;
         private INetworkRunnerCallbacks _callbacks;
-
-        /// Раннера не стало: подписчик обязан заново войти в лобби, если он там был.
-        public Observable<Unit> Recycled => _recycled;
 
         /// Живой раннер или null. Выключенный за живой не считаем — по нему уже ничего
         /// не спросить, а SessionInfo у него пустой.
@@ -58,12 +53,10 @@ namespace Game.Net.Fusion
             {
                 Destroy(runner.gameObject);
             }
-
-            _recycled.Dispose();
         }
 
         /// Мост коллбэков приходит вызовом после сборки контейнера: он сам просит сессию
-        /// и браузер, а те просят фабрику — конструктором это кольцо не собрать.
+        /// и каталог, а те просят фабрику — конструктором это кольцо не собрать.
         public void UseCallbacks(INetworkRunnerCallbacks callbacks) => _callbacks = callbacks;
 
         public NetworkRunner Ensure()
@@ -98,8 +91,6 @@ namespace Game.Net.Fusion
             {
                 Destroy(runner.gameObject);
             }
-
-            _recycled.OnNext(Unit.Default);
         }
 
         private void Release()

@@ -102,6 +102,7 @@ MonoBehaviour:
   - rid: 1000
   - rid: 1001
   - rid: 1002
+  - rid: 1003
   PrefabOptions:
     UnloadPrefabOnReleasingLastInstance: 0
     UnloadUnusedPrefabsOnShutdown: 0
@@ -142,3 +143,10 @@ MonoBehaviour:
         AssetGuid:
           RawGuidValue: 2a233f21a0ae8f74db52fe2b051bc2fc
         AssetPath: Assets/_MultiplayerDemo/Prefabs/Player_Fusion.prefab
+    - rid: 1003
+      type: {class: NetworkPrefabSourceStaticLazy, ns: Fusion, asm: Fusion.Unity}
+      data:
+        Object: {fileID: 2155128535976932950, guid: 9e8261ae770175047bbcd500f44d585e, type: 3}
+        AssetGuid:
+          RawGuidValue: 9e8261ae770175047bbcd500f44d585e
+        AssetPath: Assets/_MultiplayerDemo/Prefabs/SceneCarrier_Fusion.prefab

@@ -12,6 +12,7 @@ namespace Game.Core
     {
         private readonly float _maxSpeed;
         private readonly float _tolerance;
+        private readonly double _window;
         private readonly double _grace;
 
         private Vector3 _lastAccepted;
@@ -19,10 +20,11 @@ namespace Game.Core
         private double _correctedAt;
         private bool _awaitingReturn;
 
-        public SpeedGuardLogic(float maxSpeed, float tolerance, double grace)
+        public SpeedGuardLogic(float maxSpeed, float tolerance, double window, double grace)
         {
             _maxSpeed = maxSpeed;
             _tolerance = tolerance;
+            _window = window;
             _grace = grace;
         }
 
@@ -34,11 +36,20 @@ namespace Game.Core
         }
 
         /// true — перемещение неправдоподобно, владельца надо вернуть в returnTo.
+        ///
+        /// Скорость меряется на окне, а не между соседними кадрами: поза чужого игрока приходит
+        /// по сети порциями, и на шаге физики каждая порция выглядит рывком сверх любого порога.
+        /// У Fusion это видно лучше всего — поза едет через облако, — но окно нужно всем: оно
+        /// отделяет дрожание доставки от честно задранной скорости, которая за полсекунды
+        /// набирает лишние метры и никуда не девается.
         public bool TryCorrect(Vector3 position, double now, out Vector3 returnTo)
         {
-            var elapsed = (float)(now - _lastCheck);
-            _lastCheck = now;
             returnTo = _lastAccepted;
+
+            var elapsed = (float)(now - _lastCheck);
+            if (elapsed < _window) return false;
+
+            _lastCheck = now;
 
             if (_awaitingReturn)
             {

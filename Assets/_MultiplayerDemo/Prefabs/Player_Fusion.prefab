@@ -64,19 +64,8 @@ PrefabInstance:
       addedObject: {fileID: 28725529200991634}
     - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6624443345340857931}
+      addedObject: {fileID: 4962425089383389423}
   m_SourcePrefab: {fileID: 100100000, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
---- !u!114 &2943472893646554208 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1320685494205604677, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 4219122390303090469}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb24d985f99976b49893a003bf9094d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.HoldPoint
 --- !u!1 &4124734565659913445 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
@@ -101,7 +90,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 28725529200991634}
-  - {fileID: 6624443345340857931}
+  - {fileID: 4962425089383389423}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &28725529200991634
 MonoBehaviour:
@@ -143,7 +132,7 @@ MonoBehaviour:
     MinImpactfulCollisionAlignment: 0.3
     ImpactStartCorrectionTime: 0.1
     ImpactCorrectionTimeComplete: 0.3
---- !u!114 &6624443345340857931
+--- !u!114 &4962425089383389423
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,19 +141,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4124734565659913445}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 407a54dcb223f594b9f77e9b757d6bff, type: 3}
+  m_Script: {fileID: 11500000, guid: 659ecfcbff8fd7f43a63ab53c0ea5c37, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game.Net.Fusion::Game.Net.Fusion.FusionPlayer
-  _ray: {fileID: 8630197118455471659}
-  _holdPoint: {fileID: 2943472893646554208}
---- !u!114 &8630197118455471659 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5569206681219037454, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 4219122390303090469}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4124734565659913445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f35bf2cf773e2744b3c22e9dd3e9bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.InteractionRay
+  m_EditorClassIdentifier: Game.Net.Fusion::Game.Net.Fusion.FusionCarrier
+  _SceneEntity: 0

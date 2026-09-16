@@ -18,6 +18,7 @@ namespace Game.Net
         /// собственного выхода стек ещё вправе прислать «отключено», и это не отказ.
         private bool _active;
         private bool _scheduled;
+        private bool _closed;
 
         public ReadOnlyReactiveProperty<SessionState> State => _state;
 
@@ -26,7 +27,15 @@ namespace Game.Net
             _frames = frames;
         }
 
-        public void Dispose() => _state.Dispose();
+        /// Отложенная доставка переживает разбор scope: выход из матча кладёт в очередь Idle, а
+        /// следом уходит сцена стека вместе с сессией — и кадром позже работа проснулась бы уже
+        /// над закрытым свойством. Поэтому закрытый публикатор молчит, а не бросает.
+        public void Dispose()
+        {
+            _closed = true;
+            _pending.Clear();
+            _state.Dispose();
+        }
 
         /// Намерение объявляем мы сами — Hosting или Connecting.
         public void Begin(SessionPhase phase)
@@ -70,6 +79,8 @@ namespace Game.Net
 
         private void Enqueue(SessionState state)
         {
+            if (_closed) return;
+
             _pending.Enqueue(state);
 
             if (_scheduled) return;
@@ -81,6 +92,8 @@ namespace Game.Net
         private void Flush()
         {
             _scheduled = false;
+
+            if (_closed) return;
 
             while (_pending.Count > 0)
             {

@@ -9,8 +9,17 @@ namespace Game.Gameplay
     /// аватарами — на всех стеках, включая Fusion, где судья — мастер-клиент.
     public sealed class SpeedGuardService : IFixedTickable
     {
+        /// Окно замера. Позу чужого аватара судья получает порциями — по снимку на тик стека, а
+        /// у Fusion ещё и через облако, — и на шаге физики каждая порция выглядит рывком сверх
+        /// порога: за 0.02 с честный спринт «проходит» больше, чем ему положено. За полсекунды
+        /// доставка усредняется, а задранная скорость успевает набрать лишние метры.
+        private const double WINDOW = 0.5;
+
         /// Поправка идёт до владельца и обратно RTT: всё это время судья видит старую позицию.
-        private const double GRACE = 0.5;
+        /// У Fusion дорога лежит через облако и круг доходит до секунды — короткая пауза
+        /// превращала одну поправку в череду: судья не успевал увидеть вернувшегося владельца
+        /// и слал следующую (ручной прогон 15.11).
+        private const double GRACE = 1.0;
 
         private readonly AvatarRegistry _avatars;
         private readonly NetworkSlot _slot;
@@ -40,7 +49,7 @@ namespace Game.Gameplay
 
                 if (!_guards.TryGetValue(avatar.Owner, out var guard))
                 {
-                    guard = new SpeedGuardLogic(_config.SprintSpeed, _config.SpeedTolerance, GRACE);
+                    guard = new SpeedGuardLogic(_config.SprintSpeed, _config.SpeedTolerance, WINDOW, GRACE);
                     guard.Reset(avatar.transform.position, now);
                     _guards[avatar.Owner] = guard;
                     continue;
