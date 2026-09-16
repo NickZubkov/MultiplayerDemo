@@ -1,19 +1,9 @@
 {
-    "name": "Tests.EditMode",
+    "name": "Tests.Net.Mirror",
     "rootNamespace": "Game.Tests",
     "references": [
-        "Game.Core",
         "Game.Net",
-        "Game.Net.Local",
-        "Game.Net.Ngo",
         "Game.Net.Mirror",
-        "Game.App",
-        "Game.Gameplay",
-        "Game.UI",
-        "R3.Unity",
-        "VContainer",
-        "UniTask",
-        "Unity.InputSystem",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
@@ -24,8 +14,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "R3.dll"
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

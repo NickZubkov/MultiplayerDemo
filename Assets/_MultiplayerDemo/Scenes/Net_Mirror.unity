@@ -217,7 +217,9 @@ MonoBehaviour:
   playerPrefab: {fileID: 7582254585086592024, guid: 6cce5cc6cd4dfbf49bbde138fc873765, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 1507004816316533343, guid: b9122acb261b67346b8ae7b7ed6d1619, type: 3}
+  - {fileID: 354214966015793736, guid: a7ebdae0c430ceb469865fbbb1c2eecc, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -284,8 +286,8 @@ MonoBehaviour:
   _stack: {fileID: 11400000, guid: 2947feb0c60d0c74885cf89b0bb921e0, type: 2}
   _manager: {fileID: 1042562692}
   _discovery: {fileID: 1042562690}
-  _playerPrefab: {fileID: 7582254585086592024, guid: 6cce5cc6cd4dfbf49bbde138fc873765, type: 3}
-  _cratePrefab: {fileID: 1507004816316533343, guid: b9122acb261b67346b8ae7b7ed6d1619, type: 3}
+  _entities: {fileID: 11400000, guid: 9e9627c5d336592449edebd1b3a9a838, type: 2}
+  _sceneCarrier: {fileID: 354214966015793736, guid: a7ebdae0c430ceb469865fbbb1c2eecc, type: 3}
 --- !u!4 &1770134080
 Transform:
   m_ObjectHideFlags: 0

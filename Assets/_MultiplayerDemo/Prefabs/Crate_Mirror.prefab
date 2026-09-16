@@ -64,7 +64,7 @@ PrefabInstance:
       addedObject: {fileID: 4776924489729282415}
     - targetCorrespondingSourceObject: {fileID: 5272032206444132188, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4166103810832338736}
+      addedObject: {fileID: 3685621896231773493}
   m_SourcePrefab: {fileID: 100100000, guid: e360b0cbe4530c343bf4bd8909f2884e, type: 3}
 --- !u!1 &1507004816316533343 stripped
 GameObject:
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 677466794
+  _assetId: 1893198678
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -122,7 +122,7 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &4166103810832338736
+--- !u!114 &3685621896231773493
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,9 +131,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1507004816316533343}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4055e8853bf7a564e971b5008630f448, type: 3}
+  m_Script: {fileID: 11500000, guid: a509bc53334d7e042945d7103e5e2b7e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorItem
+  m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorCarrier
   syncDirection: 0
   syncMode: 0
   syncInterval: 0

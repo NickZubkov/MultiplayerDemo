@@ -8,7 +8,7 @@ namespace Game.Net.Mirror
     /// RegisterClientMessages, и чужая подписка там не выживет.
     ///
     /// Зависимости приходят вызовом Bind из RegisterBuildCallback, а не через [Inject]:
-    /// MirrorSessionControl просит менеджер конструктором, и инъекция в обратную сторону
+    /// MirrorSession просит менеджер конструктором, и инъекция в обратную сторону
     /// замкнула бы кольцо, на котором сборка контейнера падает.
     ///
     /// В сцене у менеджера снят dontDestroyOnLoad: сцену стека выгружают при возврате к
@@ -16,16 +16,16 @@ namespace Game.Net.Mirror
     /// не мешает — новый экземпляр забирает его себе (NetworkManager.InitializeSingleton).
     public sealed class MirrorNetworkManager : NetworkManager
     {
-        private MirrorSessionControl _session;
-        private MirrorWorldSpawner _spawner;
-        private MirrorObjectFactory _factory;
+        private MirrorSession _session;
+        private MirrorSpawner _spawner;
+        private MirrorPlayers _players;
         private bool _quitting;
 
-        public void Bind(MirrorSessionControl session, MirrorWorldSpawner spawner, MirrorObjectFactory factory)
+        public void Bind(MirrorSession session, MirrorSpawner spawner, MirrorPlayers players)
         {
             _session = session;
             _spawner = spawner;
-            _factory = factory;
+            _players = players;
         }
 
         /// Флаг ставим до базы: внутри она зовёт StopClient, и разрыв прилетит уже во время
@@ -37,9 +37,19 @@ namespace Game.Net.Mirror
             base.OnApplicationQuit();
         }
 
-        public override void OnStartClient() => _factory.RegisterHandlers();
+        /// ReplaceHandler, а не RegisterHandler: вторая сессия того же scope снова пройдёт
+        /// через OnStartClient.
+        public override void OnStartClient()
+        {
+            _spawner.RegisterHandlers();
+            NetworkClient.ReplaceHandler<MirrorWelcome>(welcome => _players.Greet(new PlayerId(welcome.Player)));
+        }
 
-        public override void OnStopClient() => _factory.UnregisterHandlers();
+        public override void OnStopClient()
+        {
+            _spawner.UnregisterHandlers();
+            NetworkClient.UnregisterHandler<MirrorWelcome>();
+        }
 
         public override void OnClientConnect()
         {
@@ -52,23 +62,31 @@ namespace Game.Net.Mirror
         public override void OnClientDisconnect()
         {
             if (_quitting) return;
-            _session.ReportDisconnected(null);
+
+            _session.ReportLost(null);
+        }
+
+        /// Номер игрока выдаёт сервер и говорит его первым сообщением: connectionId у KCP —
+        /// хеш адреса и бывает отрицательным (спайк), а PlayerId отрицательных не принимает.
+        /// Приветствие идёт тем же надёжным каналом раньше любого спавна, поэтому к появлению
+        /// своего аватара клиент уже знает, кто он.
+        public override void OnServerConnect(NetworkConnectionToClient connection)
+        {
+            base.OnServerConnect(connection);
+
+            var player = _players.Admit(connection);
+            connection.Send(new MirrorWelcome { Player = player.Value });
+        }
+
+        /// Номер снимаем до базы: она уничтожит аватар, и носитель уйдёт уже без игрока.
+        /// Сущности мира ушедший не держит — они не его, и Mirror их не тронет.
+        public override void OnServerDisconnect(NetworkConnectionToClient connection)
+        {
+            _players.Release(connection);
+            base.OnServerDisconnect(connection);
         }
 
         public override void OnServerAddPlayer(NetworkConnectionToClient connection) =>
-            _spawner.SpawnPlayer(connection);
-
-        /// Держатель уходит: предметы отпускаем до базы, потому что она уничтожит его
-        /// объект, и netId в SyncVar ящика станет не с чем сопоставить — ящик повис бы
-        /// занятым навсегда. Сами предметы Mirror не тронет: владение им не передаётся.
-        public override void OnServerDisconnect(NetworkConnectionToClient connection)
-        {
-            if (connection.identity != null)
-            {
-                MirrorItem.ReleaseAllHeldBy(connection.identity.netId);
-            }
-
-            base.OnServerDisconnect(connection);
-        }
+            _spawner.SpawnAvatar(connection);
     }
 }

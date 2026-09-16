@@ -1,6 +1,7 @@
 using System.Linq;
 using Game.Net;
 using Game.Net.Local;
+using Game.Net.Mirror;
 using Game.Net.Ngo;
 using NUnit.Framework;
 
@@ -15,6 +16,7 @@ namespace Game.Tests
         [TestCase(typeof(NetEntityChannel))]
         [TestCase(typeof(LocalNetwork))]
         [TestCase(typeof(NgoCarrier))]
+        [TestCase(typeof(MirrorCarrier))]
         public void NetworkDoesNotSeeTheGame(System.Type probe)
         {
             var references = probe.Assembly.GetReferencedAssemblies().Select(name => name.Name);

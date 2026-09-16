@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff0384f337a4ee84881d68da3dbc707c, type: 3}
+  m_Name: Entities_Mirror
+  m_EditorClassIdentifier: Game.Net::Game.Net.EntityCatalog
+  _entries:
+  - _entityType: player
+    _prefab: {fileID: 7582254585086592024, guid: 6cce5cc6cd4dfbf49bbde138fc873765, type: 3}
+  - _entityType: crate
+    _prefab: {fileID: 1507004816316533343, guid: b9122acb261b67346b8ae7b7ed6d1619, type: 3}

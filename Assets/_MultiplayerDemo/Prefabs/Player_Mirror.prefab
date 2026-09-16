@@ -64,22 +64,8 @@ PrefabInstance:
       addedObject: {fileID: 7856326926610430550}
     - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2390548125840667047}
-    - targetCorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3921991308938775051}
+      addedObject: {fileID: 5705553984594589455}
   m_SourcePrefab: {fileID: 100100000, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
---- !u!114 &2865145784945718998 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5569206681219037454, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 7677160795707232216}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7582254585086592024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f35bf2cf773e2744b3c22e9dd3e9bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.InteractionRay
 --- !u!1 &7582254585086592024 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 266650596894215104, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
@@ -136,7 +122,7 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &2390548125840667047
+--- !u!114 &5705553984594589455
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,27 +131,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7582254585086592024}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af5a7978fb14a1e4a8e532aa93df19ca, type: 3}
+  m_Script: {fileID: 11500000, guid: a509bc53334d7e042945d7103e5e2b7e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorPlayer
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _ray: {fileID: 2865145784945718998}
-  _holdPoint: {fileID: 8709615766184242333}
---- !u!114 &3921991308938775051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7582254585086592024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5d5e74ef0a2a74dbf99f4d77dec2cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorSpeedGuard
-  syncDirection: 0
+  m_EditorClassIdentifier: Game.Net.Mirror::Game.Net.Mirror.MirrorCarrier
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
 --- !u!4 &8410044295048706514 stripped
@@ -173,14 +142,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2178822663391344138, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
   m_PrefabInstance: {fileID: 7677160795707232216}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8709615766184242333 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1320685494205604677, guid: c6a33bbb7c67b5d47832afab6aaf5365, type: 3}
-  m_PrefabInstance: {fileID: 7677160795707232216}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb24d985f99976b49893a003bf9094d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Game.Gameplay::Game.Gameplay.HoldPoint

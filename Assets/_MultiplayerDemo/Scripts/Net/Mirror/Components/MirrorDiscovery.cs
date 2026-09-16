@@ -23,7 +23,8 @@ namespace Game.Net.Mirror
 
         public event Action<MirrorHostBeacon> HostFound;
 
-        /// Что отвечать спрашивающим. Заполняет браузер хостов, когда презентер поднял хост.
+        /// Что отвечать спрашивающим. Кладёт каталог хостов каждый кадр, пока идёт матч:
+        /// счётчик игроков в ответе живой, а не снятый на старте (И-7).
         public void Describe(MirrorHostBeacon beacon) => _own = beacon;
 
         protected override ServerRequest GetRequest() => new ServerRequest();
@@ -33,7 +34,7 @@ namespace Game.Net.Mirror
             /// Порт спрашиваем у транспорта, а не держим константой: он настраивается
             /// в сцене, и разъехавшиеся значения дали бы клиенту адрес, по которому никого нет.
             var beacon = _own;
-            beacon.Port = transport is PortTransport port ? port.Port : (ushort)0;
+            beacon.Port = MirrorAddress.PortOf(transport);
             return beacon;
         }
 
