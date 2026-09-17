@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Game.Net;
 using NUnit.Framework;
 using R3;
 
 namespace Game.Tests
 {
-    /// Контракт сессии (спека § 5.3) держит этот класс, а не три адаптера по отдельности.
+    /// Контракт сессии (спека § 5.3) держит этот класс, а не каждый стек по отдельности.
     public sealed class SessionStatePublisherTests
     {
         /// Подписчик, который из обработчика Failed зовёт выход, не должен войти в стек

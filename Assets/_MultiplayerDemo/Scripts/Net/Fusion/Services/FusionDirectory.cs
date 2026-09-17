@@ -126,7 +126,7 @@ namespace Game.Net.Fusion
                 if (!_browsing) break;
 
                 var canceled = await UniTask.Delay(RETRY_INTERVAL, cancellationToken: _token)
-                                            .SuppressCancellationThrow();
+                    .SuppressCancellationThrow();
 
                 if (canceled) break;
             }
@@ -144,9 +144,9 @@ namespace Game.Net.Fusion
             /// Настройки те же, что у старта сессии, и подложить сводку регионов надо в оба
             /// места: в лобби каталог входит первым, и полный пинг случается там.
             var result = await _runners.Ensure()
-                                       .JoinSessionLobby(SessionLobby.Shared,
-                                           customAppSettings: PhotonRegionSummary.WithStoredRegion(),
-                                           cancellationToken: _token);
+                .JoinSessionLobby(SessionLobby.Shared,
+                    customAppSettings: PhotonRegionSummary.WithStoredRegion(),
+                    cancellationToken: _token);
 
             if (!_browsing || result.Ok) return;
 

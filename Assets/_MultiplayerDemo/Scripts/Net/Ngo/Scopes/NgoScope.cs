@@ -29,8 +29,8 @@ namespace Game.Net.Ngo
             /// Спавнер собирается руками: каталог и префаб носителя — поля этой сцены, а не
             /// зарегистрированные сервисы, и сквозь контейнер их тянуть незачем.
             builder.RegisterEntryPoint<NgoSpawner>(
-                       container => new NgoSpawner(_manager, _entities, _sceneCarrier), Lifetime.Singleton)
-                   .AsSelf();
+                    container => new NgoSpawner(_manager, _entities, _sceneCarrier), Lifetime.Singleton)
+                .AsSelf();
 
             /// Lifetime.Singleton, а не Scoped: регистрация объявлена здесь, значит экземпляр
             /// создаётся здесь и умирает вместе со сценой стека. Scoped VContainer пересоздаёт

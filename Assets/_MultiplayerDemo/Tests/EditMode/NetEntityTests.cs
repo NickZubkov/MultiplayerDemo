@@ -40,6 +40,6 @@ namespace Game.Tests
         /// её при разрушении объекта в игре.
         private static void Destroy(NetEntity entity) =>
             typeof(NetEntity).GetMethod("OnDestroy", BindingFlags.Instance | BindingFlags.NonPublic)
-                             .Invoke(entity, null);
+                .Invoke(entity, null);
     }
 }

@@ -4,11 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Состояние проекта
 
-Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Основа — шаблон «URP Empty»: единственная сцена — `Assets/Scenes/SampleScene.unity` (Main Camera, Directional Light, Global Volume), она же единственная в Build Settings. Поверх шаблона установлены три сетевых стека (см. ниже), поэтому чужого кода в `Assets/` много — весь он вендорский и правке не подлежит.
+Unity **6000.3.19f1** (Unity 6.3), URP **17.3.0**. Основа — шаблон «URP Empty», поверх которого установлены три сетевых стека (см. ниже), поэтому чужого кода в `Assets/` много — весь он вендорский и правке не подлежит. Демка — один игровой слайс, собранный четырежды: на NGO, Mirror, Fusion и на стеке «Без сети» (`Game.Net.Local`), который гоняет тот же код без единого пакета сети.
 
-**Всё своё живёт в `Assets/_MultiplayerDemo/`** — `Scripts/`, `Tests/`, а по мере появления `Scenes/`, `Prefabs/`, `Settings/`. Подчёркивание в начале имени держит папку первой в Project-окне. Правило простое: если файл создали мы, он внутри `_MultiplayerDemo`; всё остальное в `Assets/` — чужое. Исключение по существу одно: `Assets/Settings/*_RPAsset` и `*_Renderer` — на них завязаны QualitySettings и обе ветки качества URP. `Assets/Scenes/SampleScene.unity` исключение временное: своих сцен пока нет, и она держит единственную строку в Build Settings; в задаче 7, когда Build Settings перезаполнятся сценами `Bootstrap`, `Arena`, `Net_Ngo`, она удаляется вместе с папкой.
+**Всё своё живёт в `Assets/_MultiplayerDemo/`** — `Scripts/`, `Tests/`, `Scenes/`, `Prefabs/`, `Materials/`, `Settings/`. Подчёркивание в начале имени держит папку первой в Project-окне. Правило простое: если файл создали мы, он внутри `_MultiplayerDemo`; всё остальное в `Assets/` — чужое. Исключение по существу одно: `Assets/Settings/*_RPAsset` и `*_Renderer` — на них завязаны QualitySettings и обе ветки качества URP.
 
-Своего кода пока почти нет — пять пустых asmdef и один проверочный тест. Поэтому ниже описана не существующая архитектура, а **зафиксированные решения и ограничения**, которые нужно соблюдать при написании кода.
+В Build Settings восемь своих сцен: `Bootstrap` (корень приложения), три арены — `Arena_Box`, `Arena_Yard`, `Arena_Ramp` — и четыре сцены стеков — `Net_Ngo`, `Net_Mirror`, `Net_Fusion`, `Net_Local`. Сцена стека встаёт в гнездо рядом с ареной, а не поверх неё.
+
+**Сборок своего кода десять**, и направление ссылок между ними — главный инвариант проекта (спека `Docs/2026-09-11-Целевая архитектура.md` § 3):
+
+```
+                    Game.App          MatchFlow, StackFlow, ArenaLoader, корни композиции
+                  ↙     ↓      ↘
+           Game.UI   Game.Gameplay    (на стеки App не ссылается)
+                  ↘     ↓      ↙
+                    Game.Core         домен: правила, логика механик, контракты потоков
+                        ↓
+                    Game.Net          контракты сети и общий сетевой код
+                        ↑
+  Game.Net.Ngo   Game.Net.Mirror   Game.Net.Fusion   Game.Net.Local
+```
+
+Десятая — `Game.Net.Fusion.Editor` (`includePlatforms: [Editor]`, папка `Scripts/Net/Fusion/Editor/`): копия конфигурации Fusion для виртуальных игроков MPPM и уборка служебных объектов Photon. Редакторский код держится там, а не под `#if UNITY_EDITOR` в рантайм-сборке.
+
+Тестовых сборок три: `Tests.EditMode` (namespace `Game.Tests`, всё кроме конкретных стеков), `Tests.Net.Ngo` и `Tests.Net.Mirror` — кодеки маяков своих стеков. Фильтр прогона — `Game.Tests.*`.
 
 ## Команды
 
@@ -31,7 +49,7 @@ Remove-Item -Recurse -Force Library\Bee, Library\ScriptAssemblies
 
 Unity восстановит их сам. Полная пересборка — минуты, инкрементальная — секунды.
 
-Тесты (`com.unity.test-framework` 1.6.0 установлен, но тестовых сборок в `Assets/` ещё нет — их предстоит создать вместе с asmdef):
+Тесты (`com.unity.test-framework` 1.6.0; свои сборки — `Tests.EditMode`, `Tests.Net.Ngo`, `Tests.Net.Mirror`, все в namespace `Game.Tests`):
 
 ```powershell
 & "C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe" -batchmode -nographics `
@@ -40,7 +58,7 @@ Unity восстановит их сам. Полная пересборка — 
   -testResults "$env:TEMP\results.xml" -logFile -
 ```
 
-`-testPlatform PlayMode` — для playmode-тестов. Один тест или группа: `-testFilter "Namespace.Class.Method"` (принимает регулярку и список через запятую).
+`-testPlatform PlayMode` — для playmode-тестов. Один тест или группа: `-testFilter "Game.Tests.CrateLogicTests.RaceGoesToFirstAndSecondIsToldWhy"` (принимает регулярку и список через запятую); весь свой код — `-testFilter "Game.Tests.*"`.
 
 CLI-сборки плеера пока невозможны: `-executeMethod` требует своего build-скрипта в `Assets/Editor/`, его ещё нет.
 
@@ -69,11 +87,6 @@ Prefab Variant штатный инструмент не умеет: делать
 
 **Ветки под задачи не заводить — работаем прямо в `main`.** Это решение владельца от 2 сентября 2026; оно перекрывает общее правило «сначала ветка, потом коммит».
 
-**Исключение — фаза 4.6 (задачи 15.2–15.14):** она идёт в ветке `target-architecture` от `54d3183` (там же
-тег `pre-target-architecture`), сливает её в `main` владелец. Всё остальное — по обычному протоколу:
-подтверждение перед каждым коммитом, push только владельцем. Решение от 11 сентября 2026, ветка сохранена
-решением от 12 сентября; исключение снимается в задаче 15.13, перед слиянием.
-
 **Одна задача — одна сессия.** Сессия берёт ровно одну задачу плана, доводит её до коммита и заканчивается;
 следующую задачу начинает новая сессия. Решение владельца от 12 сентября 2026: в тот день пробовали
 исполнение субагентами (по одной задаче на субагента, ревью пачками) и отказались — разбор в
@@ -98,6 +111,12 @@ Prefab Variant штатный инструмент не умеет: делать
 **Три сетевых стека стоят одновременно, и это сознательно.** Netcode for GameObjects 2.13.2, Multiplayer Play Mode 2.0.2 и Multiplayer Tools 2.2.11 — из Unity Registry; Mirror 96.x — в `Assets/Mirror`; Photon Fusion 2.1.1 Stable — в `Assets/Photon`. Проверено сборкой с нуля: все три кодогенератора работают в одном конвейере ILPP и не конфликтуют, разбор — в `Docs/Нулевой день.md` § 1.
 
 Из этого следует несколько правил. **Вендорские папки не трогать и не перемещать** — Fusion держится за буквальный путь `Assets/Photon` в трёх местах, включая `const string`. `Assets/ScriptTemplates` принадлежит Mirror и обязана лежать именно там: это служебная папка Unity. **Новые сетевые пакеты не ставить**, набор закрыт — UGS Multiplayer Services отклонён отдельным решением (D14 в дизайн-документе).
+
+**Граница сборок держится ссылками в asmdef, и её сторожит тест.** `Game.Net.Ngo`, `.Mirror`, `.Fusion`, `.Local` ссылаются только на `Game.Net`, пакет своего стека и VContainer/R3/UniTask — **ни на одну игровую сборку**: сеть не знает, что существует игра. В обратную сторону так же — `Game.Core` и `Game.Gameplay` видят `Game.Net` (контракты), но не реализации стеков, а `Game.App` не ссылается ни на один стек: стек подключается сам, через гнездо `NetworkSlot`. Лишнюю ссылку, добавленную в asmdef, ловит `AssemblyBoundaryTests` — он обходит пять сетевых сборок по имени в домене и падает с именем той, что увидела игру или пропала из сборки.
+
+**Игровая логика — в `Game.Core`, сеть — «глупый» слой примитивов.** Механики (`CrateLogic`, `DoorLogic`, `SpeedGuardLogic`) — обычные C#-классы поверх `INetEntity`; `MonoBehaviour` в `Game.Gameplay` — оболочки без решений о правилах. Новая механика не должна требовать правок в `Scripts/Net/`, `Scripts/App/` и `Scripts/UI/` — это проверялось дифом на двери (задача 15.12) и остаётся критерием при добавлении следующей.
+
+**Единственный свой код вне asmdef** — `Scripts/Integrations/StarterAssets/` (`StarterAssetsControllerProvider`, `StarterAssetsInputFeeder`): он попадает в `Assembly-CSharp`, потому что Starter Assets своей сборки не имеют. Это исключение осознанное и единственное; всё остальное заводится внутри существующих сборок.
 
 **Целевой рантайм:** .NET Standard 2.1 (`apiCompatibilityLevel: 6`), C# 9, Mono, платформа сборки — Standalone Windows.
 

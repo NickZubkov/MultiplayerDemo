@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using Fusion;
 using UnityEditor;
@@ -89,4 +88,3 @@ namespace Game.Net.Fusion
         }
     }
 }
-#endif

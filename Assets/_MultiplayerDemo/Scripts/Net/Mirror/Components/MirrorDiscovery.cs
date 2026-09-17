@@ -1,6 +1,5 @@
 using System;
 using System.Net;
-using Mirror;
 using Mirror.Discovery;
 
 namespace Game.Net.Mirror

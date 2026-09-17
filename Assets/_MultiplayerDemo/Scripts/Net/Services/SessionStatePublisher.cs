@@ -5,9 +5,9 @@ using R3;
 
 namespace Game.Net
 {
-    /// Общий исполнитель контракта INetSession. Адаптер стека сообщает сюда факты,
+    /// Общий исполнитель контракта INetSession. Реализация стека сообщает сюда факты,
     /// а правила — что считать отказом и когда рассказывать подписчикам — живут здесь,
-    /// один раз, вместо трёх заплат в трёх адаптерах (А-2, А-3, И-10, И-11).
+    /// один раз, вместо отдельной заплаты в каждом стеке (А-2, А-3, И-10, И-11).
     public sealed class SessionStatePublisher : IDisposable
     {
         private readonly ReactiveProperty<SessionState> _state = new(new SessionState(SessionPhase.Idle));

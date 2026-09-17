@@ -135,11 +135,11 @@ namespace Game.App
             _phase.Value = AppPhase.Lobby;
             _session = Disposable.Combine(
                 stack.Session.State
-                     .Where(state => state.Phase is SessionPhase.Hosting or SessionPhase.Connected)
-                     .Subscribe(_ => _phase.Value = AppPhase.InMatch),
+                    .Where(state => state.Phase is SessionPhase.Hosting or SessionPhase.Connected)
+                    .Subscribe(_ => _phase.Value = AppPhase.InMatch),
                 stack.Session.State
-                     .Where(state => state.Phase == SessionPhase.Failed)
-                     .SubscribeAwait((state, _) => FailAsync(state), AwaitOperation.Drop));
+                    .Where(state => state.Phase == SessionPhase.Failed)
+                    .SubscribeAwait((state, _) => FailAsync(state), AwaitOperation.Drop));
         }
 
         /// Причина уходит в Failures до выгрузки: сообщение переживает смену сцены.

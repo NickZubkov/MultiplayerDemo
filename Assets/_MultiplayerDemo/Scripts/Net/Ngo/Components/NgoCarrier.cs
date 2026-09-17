@@ -25,11 +25,17 @@ namespace Game.Net.Ngo
         private NetEntityChannel _channel;
         private NetEntity _bound;
         private NetworkTransform _transform;
+        private PlayerId _owner;
 
         public NetEntityId Id =>
             _sceneEntity.Value != 0 ? new NetEntityId(_sceneEntity.Value) : NetEntityId.Dynamic(NetworkObjectId);
 
-        public PlayerId Owner => NetworkObject.IsPlayerObject ? NgoIds.Player(OwnerClientId) : PlayerId.NONE;
+        /// Запоминаем при спавне и держим полем, как два других стека. Спрашивать сеть каждый раз
+        /// нельзя: при деспавне игрока NGO снимает IsPlayerObject раньше, чем уничтожает объект
+        /// (NetworkSpawnManager.OnDespawnObject зовёт RemovePlayerObject до Destroy), и аватар
+        /// снимался бы с учёта под чужим номером — реестр оставался бы с мёртвой записью (В-2).
+        /// Владелец за жизнь сущности у нас не меняется, так что поле не устаревает.
+        public PlayerId Owner => _owner;
 
         public bool IsAuthority => IsOwner;
 
@@ -47,6 +53,10 @@ namespace Game.Net.Ngo
         public override void OnNetworkSpawn()
         {
             if (IsServer && !_markedScene.IsNone) _sceneEntity.Value = _markedScene.Value;
+
+            /// Здесь IsPlayerObject и OwnerClientId ещё достоверны: у сущностей мира владельца нет,
+            /// у аватара он свой и больше не меняется.
+            _owner = NetworkObject.IsPlayerObject ? NgoIds.Player(OwnerClientId) : PlayerId.NONE;
 
             _state.OnValueChanged += OnStateChanged;
             _channel = new NetEntityChannel(this);

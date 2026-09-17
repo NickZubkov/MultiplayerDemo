@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using Fusion;
 using Game.Net.Fusion;
@@ -19,8 +18,8 @@ namespace Game.Net.Fusion
     /// виртуальному игроку MPPM, у которого `.fusion` не импортируется; почему так, разобрано
     /// в [[FusionConfigCopy]].
     ///
-    /// Весь файл под `UNITY_EDITOR`: в собранной игре ассет приходит из `Resources` штатным
-    /// источником Fusion, и подменять там нечего.
+    /// Живёт в редакторской сборке `Game.Net.Fusion.Editor`: в собранной игре ассет приходит
+    /// из `Resources` штатным источником Fusion, и подменять там нечего (И-28).
     public sealed class FusionConfigCopySourceAttribute : FusionGlobalScriptableObjectSourceAttribute
     {
         public FusionConfigCopySourceAttribute(Type objectType) : base(objectType)
@@ -52,4 +51,3 @@ namespace Game.Net.Fusion
         }
     }
 }
-#endif

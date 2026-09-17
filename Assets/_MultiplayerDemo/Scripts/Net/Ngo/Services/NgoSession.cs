@@ -99,7 +99,7 @@ namespace Game.Net.Ngo
         private UniTask HostAsync(SessionSettings settings)
         {
             _manager.GetComponent<UnityTransport>()
-                    .SetConnectionData(NgoAddress.LOCALHOST, NgoAddress.DEFAULT_PORT, LISTEN_ON_ALL);
+                .SetConnectionData(NgoAddress.LOCALHOST, NgoAddress.DEFAULT_PORT, LISTEN_ON_ALL);
             _inSession = true;
 
             if (!_manager.StartHost()) throw new InvalidOperationException(HOST_FAILED);
@@ -129,10 +129,10 @@ namespace Game.Net.Ngo
             try
             {
                 await _publisher.State
-                                .Skip(1)
-                                .Where(state => state.Phase is SessionPhase.Connected or SessionPhase.Failed)
-                                .Timeout(CONNECT_TIMEOUT)
-                                .FirstAsync(token);
+                    .Skip(1)
+                    .Where(state => state.Phase is SessionPhase.Connected or SessionPhase.Failed)
+                    .Timeout(CONNECT_TIMEOUT)
+                    .FirstAsync(token);
             }
             catch (TimeoutException)
             {

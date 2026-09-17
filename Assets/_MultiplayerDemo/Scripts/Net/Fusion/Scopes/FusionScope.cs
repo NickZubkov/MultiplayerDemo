@@ -30,14 +30,14 @@ namespace Game.Net.Fusion
             /// создаётся здесь и умирает вместе со сценой стека. Scoped VContainer пересоздаёт
             /// в том контейнере, где резолвят, и scope арены получил бы свою копию сессии.
             builder.Register(container => new FusionRunnerFactory(container, _runnerPrefab), Lifetime.Singleton)
-                   .AsImplementedInterfaces()
-                   .AsSelf();
+                .AsImplementedInterfaces()
+                .AsSelf();
 
             /// Спавнер собирается руками: каталог и префаб носителя — поля этой сцены, а не
             /// зарегистрированные сервисы, и сквозь контейнер их тянуть незачем.
             builder.Register(container => new FusionSpawner(_entities, _sceneCarrier), Lifetime.Singleton)
-                   .AsImplementedInterfaces()
-                   .AsSelf();
+                .AsImplementedInterfaces()
+                .AsSelf();
 
             builder.Register<FusionDirectory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FusionSession>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

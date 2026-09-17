@@ -146,10 +146,10 @@ namespace Game.Net.Mirror
             try
             {
                 await _publisher.State
-                                .Skip(1)
-                                .Where(state => state.Phase is SessionPhase.Connected or SessionPhase.Failed)
-                                .Timeout(CONNECT_TIMEOUT)
-                                .FirstAsync(token);
+                    .Skip(1)
+                    .Where(state => state.Phase is SessionPhase.Connected or SessionPhase.Failed)
+                    .Timeout(CONNECT_TIMEOUT)
+                    .FirstAsync(token);
             }
             catch (TimeoutException)
             {

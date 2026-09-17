@@ -39,9 +39,9 @@ namespace Game.Net.Mirror
             /// Спавнер собирается руками: каталог и префаб носителя — поля этой сцены, а не
             /// зарегистрированные сервисы, и сквозь контейнер их тянуть незачем.
             builder.Register(container => new MirrorSpawner(_entities, _sceneCarrier,
-                       container.Resolve<MirrorPlayers>()), Lifetime.Singleton)
-                   .AsImplementedInterfaces()
-                   .AsSelf();
+                    container.Resolve<MirrorPlayers>()), Lifetime.Singleton)
+                .AsImplementedInterfaces()
+                .AsSelf();
 
             builder.Register<MirrorDirectory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MirrorSession>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
