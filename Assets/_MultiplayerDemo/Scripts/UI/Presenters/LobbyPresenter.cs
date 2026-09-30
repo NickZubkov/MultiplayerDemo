@@ -59,16 +59,16 @@ namespace Game.UI
             _match.Phase.Subscribe(OnPhase).AddTo(ref _subscriptions);
             _view.ArenaChosen.Subscribe(SelectArena).AddTo(ref _subscriptions);
             _view.HostRequested
-                .SubscribeAwait((name, token) => _match.HostAsync(name, _selectedArena.Value, token), AwaitOperation.Drop)
+                .SubscribeAwait(async (name, token) => await _match.HostAsync(name, _selectedArena.Value, token), AwaitOperation.Drop)
                 .AddTo(ref _subscriptions);
             _view.JoinRequested
-                .SubscribeAwait((entry, token) => _match.JoinAsync(entry, _selectedArena.Value, token), AwaitOperation.Drop)
+                .SubscribeAwait(async (entry, token) => await _match.JoinAsync(entry, _selectedArena.Value, token), AwaitOperation.Drop)
                 .AddTo(ref _subscriptions);
             _view.ManualJoinRequested
-                .SubscribeAwait((text, token) => JoinManualAsync(text, token), AwaitOperation.Drop)
+                .SubscribeAwait(async (text, token) => await JoinManualAsync(text, token), AwaitOperation.Drop)
                 .AddTo(ref _subscriptions);
             _view.BackToStacksRequested
-                .SubscribeAwait((_, _) => _match.BackToStacksAsync(), AwaitOperation.Drop)
+                .SubscribeAwait(async (_, _) => await _match.BackToStacksAsync(), AwaitOperation.Drop)
                 .AddTo(ref _subscriptions);
         }
 

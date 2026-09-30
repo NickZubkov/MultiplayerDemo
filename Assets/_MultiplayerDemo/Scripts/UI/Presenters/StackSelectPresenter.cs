@@ -39,7 +39,7 @@ namespace Game.UI
                 .Subscribe(phase => _wanted.Value = phase == AppPhase.SelectingStack)
                 .AddTo(ref _subscriptions);
             _view.StackChosen
-                .SubscribeAwait((stack, token) => _flow.LoadAsync(stack, token), AwaitOperation.Drop)
+                .SubscribeAwait(async (stack, token) => await _flow.LoadAsync(stack, token), AwaitOperation.Drop)
                 .AddTo(ref _subscriptions);
         }
 

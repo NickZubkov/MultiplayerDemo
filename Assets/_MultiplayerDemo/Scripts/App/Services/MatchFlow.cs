@@ -139,7 +139,7 @@ namespace Game.App
                     .Subscribe(_ => _phase.Value = AppPhase.InMatch),
                 stack.Session.State
                     .Where(state => state.Phase == SessionPhase.Failed)
-                    .SubscribeAwait((state, _) => FailAsync(state), AwaitOperation.Drop));
+                    .SubscribeAwait(async (state, _) => await FailAsync(state), AwaitOperation.Drop));
         }
 
         /// Причина уходит в Failures до выгрузки: сообщение переживает смену сцены.

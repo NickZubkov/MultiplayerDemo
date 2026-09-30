@@ -1,5 +1,5 @@
 using System;
-using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 using Game.Core;
 using R3;
 using VContainer.Unity;
@@ -72,7 +72,7 @@ namespace Game.UI
             }
         }
 
-        private async UniTask ExitAsync()
+        private async ValueTask ExitAsync()
         {
             Close();
             await _match.LeaveAsync();
